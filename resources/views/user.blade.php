@@ -68,9 +68,7 @@
                                     <select class="form-control select2" name="sousCaisse" style="width: 100%;">
                                         <option value="" selected="selected">Selectionnez sous caisse</option>
                                         <option value="0">Aucune sous caisse</option>
-                                        @foreach($SC as $sc)
-                                            <option value="{{$sc -> id}}">{{strtoupper($sc -> nom)}}</option>
-                                        @endforeach
+                                            <option value="{{1}}">{{strtoupper('ok')}}</option>
                                     </select>
                                 </div>
                                 <div class="modal-footer justify-content-between">
@@ -149,7 +147,7 @@
                                     $n = 1
                                 @endphp
 
-                                @foreach($User as $u)
+                                {{--@foreach($User as $u)
                                 <tr>
                                     <td>{{$n++}}</td>
                                     <td>
@@ -218,7 +216,7 @@
                                         </form>
                                     </td>
                                 </tr>
-                                @endforeach
+                                @endforeach--}}
                             </tbody>
                         </table>
                     </div>

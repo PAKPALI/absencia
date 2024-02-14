@@ -14,11 +14,9 @@ class UserController extends Controller
 {
     public function user()
     {
-        $User = User::where('type_user', 2)->get();
-        $SousCaisse = SousCaisse::all();
+        $User = User::where('user_type', 1)->get();
 
         return view('user',[
-            'SC' => $SousCaisse,
             'User' => $User,
         ]);
     }

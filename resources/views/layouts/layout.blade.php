@@ -62,8 +62,11 @@
         <!-- Navbar -->
         @include('partials.navbar')
         <!-- /.navbar -->
-
-        @include('partials.menu')
+        @if(Auth::user()->user_type ==1)
+            @include('partials.menu')
+        @elseif(Auth::user()->user_type ==2)
+        @else  
+        @endif
 
         <!-- Content Wrapper. Contains page content -->
 

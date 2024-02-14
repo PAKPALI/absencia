@@ -99,7 +99,7 @@
                   <li class="nav-item">
                     <a href="{{route('user')}}" class="nav-link">
                       <i class="far fa-circle nav-icon"></i>
-                      <p>Ajouter des utilisateur</p>
+                      <p>Ajouter des utilisateurs</p>
                     </a>
                   </li>
                 </ul>
