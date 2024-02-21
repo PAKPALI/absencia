@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Pays;
 use App\Models\User;
-use App\Models\SousCaisse;
 use Illuminate\Http\Request;
+use Yajra\DataTables\DataTables;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -14,11 +15,38 @@ class UserController extends Controller
 {
     public function user()
     {
-        $User = User::where('user_type', 1)->get();
+        $Country = Pays::all();
 
         return view('user',[
-            'User' => $User,
+            'Country' => $Country,
         ]);
+    }
+
+    public function showListUser(Request $request)
+    {
+        // composer require yajra/laravel-datatables-oracle
+        if(request()->ajax()){
+            $Users = User::where('user_type', 2);
+            return DataTables::of($Users)
+                ->addIndexColumn()
+                ->editColumn('pays_id' , function($Users){
+                    return strtoupper($Users->country->nom);
+                })
+                ->editColumn('school_id' , function($Users){
+                    return $Users->school_id ?? '-';
+                })
+                // ->editColumn('created_at' , function($Users){
+                //     return $Users->created_at->translatedFormat('d M Y');
+                // })
+                ->addColumn('action', function($row){
+                    $btn = '<a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#modal-update"  data-id="'.$row->id.'" data-original-title="Edit" class="btn btn-warning btn-sm editUser">Mod</a>';
+                    $btn = $btn.' <a href="javascript:void(0)" data-id="'.$row->id.'" data-original-title="Delete" class="btn btn-danger btn-sm deleteTown">Sup</a>';
+                    return $btn;
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+        return view('admin.town');
     }
 
     public function profil()
@@ -95,87 +123,81 @@ class UserController extends Controller
         }
     }
 
-    public function ajouter(Request $request)
+    public function add_user(Request $request)
     {
         $error_messages = [
-            "nom.required" => "Remplir le champ Nom!",
+            "last_name.required" => "Remplir le champ Nom!",
+            "first_name.required" => "Remplir le champ Prénom!",
             "email.required" => "Remplir le champ Email!",
-            "email.unique" => "L'email ".$request-> email. " existe deja!",
+            "email.unique" => "L'email ".$request-> email. " existe déjà!",
+            "num1.required" => "Remplir le champ Numéro 1!",
+            // "num2.required" => "Remplir le champ Numéro 2!",
+            "gender.required" => "Sélectionnez le genre!",
+            "pays_id.required" => "Sélectionnez le pays!",
             "password.required" => "Remplir le champ mot de passe!",
             "password.min" => "Le mot de passe doit comporter au moins 8 caracteres!",
             "password.confirmed" => "Les deux champs de mots de passe ne correspondent pas",
         ];
 
         $validator = Validator::make($request->all(),[
-            'nom' => ['required'],
+            'last_name' => ['required'],
+            'first_name' => ['required'],
             'email' => ['required','unique:users'],
+            'num1' => ['required'],
+            // 'num2' => ['required'],
+            'gender' => ['required'],
+            'pays_id' => ['required'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ], $error_messages);
 
         if($validator->fails())
             return response()->json([
-            "status" => false,
-            "reload" => false,
-            "title" => "AJOUT ECHOUE",
-            "msg" => $validator->errors()->first()]);
+                "status" => false,
+                "reload" => false,
+                "title" => "AJOUT ECHOUE",
+                "msg" => $validator->errors()->first()
+            ]);
 
         User::create([
-            'nom' => $request-> nom,
+            'last_name' => $request-> last_name,
+            'first_name' => $request-> first_name,
             'email' => $request-> email,
+            'num1' => $request-> num1,
+            'num2' => $request-> num2,
+            'gender' => $request-> gender,
+            'pays_id' => $request-> pays_id,
+            'user_type' => 2,
             'password' => Hash::make($request['password']),
         ]);
 
         return response()->json([
             "status" => true,
             "reload" => true,
-            "redirect_to" => route('user'),
+            // "redirect_to" => route('user'),
             "title" => "AJOUT REUSSI",
             "msg" => "L'utilisateur au nom de ".$request-> nom." a bien été ajouté"
         ]);
     }
 
-    public function ajouter_admin(Request $request)
+    // 
+    public function getUserInfoById(Request $request)
     {
-        $error_messages = [
-            "nom.required" => "Remplir le champ Nom!",
-            "email.required" => "Remplir le champ Email!",
-            "email.unique" => "L'email ".$request-> email. " existe deja!",
-            "password.required" => "Remplir le champ mot de passe!",
-            "password.min" => "Le mot de passe doit comporter au moins 8 caracteres!",
-            "password.confirmed" => "Les deux champs de mots de passe ne correspondent pas",
-        ];
-
-        $validator = Validator::make($request->all(),[
-            'nom' => ['required'],
-            'email' => ['required','unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-        ], $error_messages);
-
-        if($validator->fails())
-            return response()->json([
-            "status" => false,
-            "reload" => false,
-            "title" => "AJOUT ECHOUE",
-            "msg" => $validator->errors()->first()]);
-
-        User::create([
-            'nom' => $request-> nom,
-            'email' => $request-> email,
-            'type_user' => 1,
-            'connected' => 1,
-            'password' => Hash::make($request['password']),
-        ]);
-
+        $id = $request-> id;
+        $User = User::find($id);
         return response()->json([
             "status" => true,
-            "reload" => true,
-            "redirect_to" => route('conn'),
-            "title" => "AJOUT REUSSI",
-            "msg" => "L'admin au nom de ".$request-> nom." a bien été ajouté"
+            "last_name" => $User->last_name,
+            "first_name" => $User->first_name,
+            "email" => $User->email,
+            "num1" => $User->num1,
+            "num2" => $User->num2,
+            "gender" => $User->gender,
+            "pays_id" => $User->pays_id,
         ]);
     }
 
-    public function update(Request $request)
+
+    public function update_user(Request $request)
     {
         $error_messages = [
             "nom.required" => "Remplir le champ nom!",

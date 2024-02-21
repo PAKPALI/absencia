@@ -5,7 +5,7 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1>UTILISATEURS</h1>
+                <h1>ADMINISTRATEURS</h1>
             </div>
             <div class="col-sm-6">
                 <!-- <ol class="breadcrumb float-sm-right">
@@ -23,7 +23,7 @@
 
             <div class="col-md-12">
 
-                <div class="modal fade" id="modal-default">
+                <div class="modal fade" id="modal-update">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -32,14 +32,59 @@
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
-                            <form id="mp">
+                            <form id="update">
                                 @csrf
-                                <div class="modal-body">
-                                    <input type="hidden" name="id" class="form-control" id="Id">
-                                    <input type="text" name="nom" class="form-control" id="Nom" placeholder="Nom">
+                                <div class="card-body">
+                                    <input type="text" name="id" class="form-control" id="userId">
+                                    <div class="row">
+                                        <div class="form-group col-4">
+                                            <label for="last_name">Nom</label>
+                                            <input type="text" name="last_name" class="form-control" id="last_name"
+                                                placeholder="Nom">
+                                        </div>
+                                        <div class="form-group col-4">
+                                            <label for="first_name">Prénom</label>
+                                            <input type="text" name="first_name" class="form-control" id="first_name"
+                                                placeholder="Prénom">
+                                        </div>
+                                        <div class="form-group col-4">
+                                            <label for="email">Email</label>
+                                            <input type="email" name="email" class="form-control" id="email"
+                                            placeholder="Email">
+                                        </div>
+                                        <div class="form-group col-4">
+                                            <label for="num1">Numéro 1</label>
+                                            <input type="number" name="num1" class="form-control" id="num1"
+                                                placeholder="Numéro 1">
+                                        </div>
+                                        <div class="form-group col-4">
+                                            <label for="num2">Numéro 2</label>
+                                            <input type="number" name="num2" class="form-control" id="num2"
+                                                placeholder="Numéro 2">
+                                        </div>
+                                        <div class="form-group col-4">
+                                            <label >Genre</label>
+                                            <select id="gender" name="gender" class="form-control">
+                                                <option value="">Sélectionnez le genre</option>
+                                                <option value="M">Masculin</option>
+                                                <option value="F">Feminin</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-4">
+                                            <label>Pays</label>
+                                            <select id="pays_id" name="pays_id" class="form-control">
+                                                <option value="">Sélectionnez le pays</option>
+                                                @foreach ($Country as $country)
+                                                    <option value="{{$country->id}}">{{strtoupper($country->nom)}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="modal-body">
-                                    <input type="email" name="email" class="form-control" id="Email" placeholder="Email">
+                                <!-- loader -->
+                                <div id="loader" class="text-center">
+                                    <img class="animation__shake" src="{{asset('img/trimax.gif')}}" alt="TRIMAX_Logo"
+                                        height="70" width="70">
                                 </div>
                                 <div class="modal-footer justify-content-between">
                                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -48,37 +93,6 @@
                             </form>
                         </div>
                     </div>
-
-                </div>
-                <!-- parametrer-->
-                <div class="modal fade" id="modal-gerer">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title">PARAMETRER UTILISATEUR</h4>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <form id="param">
-                                @csrf
-                                <div class="modal-body">
-                                    <input type="hidden" name="id" class="form-control" id="Id_p">
-                                    <label>Selectionnez sous caisse</label>
-                                    <select class="form-control select2" name="sousCaisse" style="width: 100%;">
-                                        <option value="" selected="selected">Selectionnez sous caisse</option>
-                                        <option value="0">Aucune sous caisse</option>
-                                            <option value="{{1}}">{{strtoupper('ok')}}</option>
-                                    </select>
-                                </div>
-                                <div class="modal-footer justify-content-between">
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
-                                    <button type="submit" class="btn btn-dark">Modifier</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-
                 </div>
 
                 <div class="card card-primary">
@@ -89,28 +103,63 @@
                     <form id="add">
                         @csrf
                         <div class="card-body">
-                            <div class="form-group">
-                                <label for="exampleInputText0">Nom</label>
-                                <input type="text" name="nom" class="form-control" id="exampleInputText0"
-                                    placeholder="Nom">
-                            </div>
-                            <div class="form-group">
-                                <label for="exampleInputText1">Email</label>
-                                <input type="email" name="email" class="form-control" id="exampleInputText1"
+                            <div class="row">
+                                <div class="form-group col-4">
+                                    <label for="exampleInputText0">Nom</label>
+                                    <input type="text" name="last_name" class="form-control" id="exampleInputText0"
+                                        placeholder="Nom">
+                                </div>
+                                <div class="form-group col-4">
+                                    <label for="exampleInputText1">Prénom</label>
+                                    <input type="text" name="first_name" class="form-control" id="exampleInputText1"
+                                        placeholder="Prénom">
+                                </div>
+                                <div class="form-group col-4">
+                                    <label for="exampleInputText2">Email</label>
+                                    <input type="email" name="email" class="form-control" id="exampleInputText2"
                                     placeholder="Email">
+                                </div>
+                                <div class="form-group col-4">
+                                    <label for="exampleInputText3">Numéro 1</label>
+                                    <input type="number" name="num1" class="form-control" id="exampleInputText3"
+                                        placeholder="Numéro 1">
+                                </div>
+                                <div class="form-group col-4">
+                                    <label for="exampleInputText4">Numéro 2</label>
+                                    <input type="number" name="num2" class="form-control" id="exampleInputText4"
+                                        placeholder="Numéro 2">
+                                </div>
+                                <div class="form-group col-4">
+                                    <label >Genre</label>
+                                    <select name="gender" class="form-control">
+                                        <option value="">Sélectionnez le genre</option>
+                                        <option value="M">Masculin</option>
+                                        <option value="F">Feminin</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-4">
+                                    <label>Pays</label>
+                                    <select name="pays_id" class="form-control">
+                                        <option value="">Sélectionnez le pays</option>
+                                        @foreach ($Country as $country)
+                                            <option value="{{$country->id}}">{{strtoupper($country->nom)}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group col-4">
+                                    <label for="exampleInputText5">Mot de passe</label>
+                                    <input type="password" name="password" class="form-control" id="exampleInputText5"
+                                        placeholder="mot de passe">
+                                </div>
+                                <div class="form-group col-4">
+                                    <label for="exampleInputText6">Confirmer mot de passe</label>
+                                    <input type="password" name="password_confirmation" class="form-control" id="exampleInputText6"
+                                        placeholder="Confirmez mot de passe">
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label for="exampleInputText2">Mot de passe</label>
-                                <input type="password" name="password" class="form-control" id="exampleInputText2"
-                                    placeholder="mot de passe">
-                            </div>
-                            <div class="form-group">
-                                <label for="exampleInputText3">Confirmer mot de passe</label>
-                                <input type="password" name="password_confirmation" class="form-control" id="exampleInputText3"
-                                    placeholder="Confirmez mot de passe">
-                            </div>
+                            
                             <!-- loader -->
-                            <div id="loader" class="text-center">
+                            <div id="loader2" class="text-center">
                                 <img class="animation__shake" src="{{asset('img/trimax.gif')}}" alt="TRIMAX_Logo"
                                     height="70" width="70">
                             </div>
@@ -128,95 +177,23 @@
                     </div>
 
                     <div class="card-body">
-                        <table id="example1" class="table table-bordered table-striped">
+                        <table id="user_list" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
-                                    <th>N*</th>
-                                    <th>Sous caisse</th>
+                                    <th>N°</th>
+                                    <th>Pays</th>
                                     <th>Nom</th>
-                                    <th>connecter</th>
-                                    <th>gerer client</th>
-                                    <th>Date</th>
-                                    <th>Parametrer</th>
-                                    <th>Modifier</th>
-                                    <th>Supprimer</th>
+                                    <th>Prénom</th>
+                                    <th>Email</th>
+                                    <th>Num1</th>
+                                    <th>Num2</th>
+                                    <th>Genre</th>
+                                    <th>Ecole</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @php
-                                    $n = 1
-                                @endphp
-
-                                {{--@foreach($User as $u)
-                                <tr>
-                                    <td>{{$n++}}</td>
-                                    <td>
-                                        @if($u->sous_caisse_id == null)
-                                            <span class="badge bg-danger">Pas de sous caisse</span>
-                                        @else
-                                            <span class="badge bg-success">{{strtoupper($u->sousCaisse->nom)}}</span>
-                                        @endif
-                                    </td>
-                                    <td>{{strtoupper($u->nom)}}</td>
-                                    <td>
-                                        <form id="connected" class="connected">
-                                            @csrf
-                                            <input type="hidden" value="{{$u -> id}}" name="id">
-                                            <input type="hidden" value="{{$u -> connected}}" name="connected">
-                                            @if($u -> connected ==0)
-                                                <input type="checkbox" id="check" data-bootstrap-switch data-off-color="danger" data-on-color="success">
-                                            @else
-                                                <input type="checkbox" id="check" name="" checked data-bootstrap-switch data-off-color="danger" data-on-color="success">
-                                            @endif
-                                        </form>
-                                    </td>
-                                    <td>
-                                        <form id="status_client" class="status_client">
-                                            @csrf
-                                            <input type="hidden" value="{{$u -> id}}" name="id">
-                                            <input type="hidden" value="{{$u -> status_client}}" name="status_client">
-                                            @if($u -> status_client ==0)
-                                                <input type="checkbox" id="check" data-bootstrap-switch data-off-color="danger" data-on-color="success">
-                                            @else
-                                                <input type="checkbox" id="check" checked data-bootstrap-switch data-off-color="danger" data-on-color="success">
-                                            @endif
-                                        </form>
-                                    </td>
-                                    <td>{{$u->created_at}}</td>
-                                    <td>
-                                        <form class="parametrer">
-                                            @csrf
-                                            <input type="hidden" value="{{$u -> id}}" name="id">
-                                            <!-- <input type="hidden" value="{{$u -> nom}}" name="nom">
-                                            <input type="hidden" value="{{$u -> email}}" name="email"> -->
-                                            <button type="submit" class="btn btn-dark" data-toggle="modal" data-target="#modal-gerer">
-                                                <i class='bx bx-setting'></i>
-                                                Parametrer
-                                            </button>
-                                        </form>
-                                    </td>
-                                    <td>
-                                        <form class="update">
-                                            @csrf
-                                            <input type="hidden" value="{{$u -> id}}" name="id">
-                                            <input type="hidden" value="{{$u -> nom}}" name="nom">
-                                            <input type="hidden" value="{{$u -> email}}" name="email">
-                                            <button type="submit" class="btn btn-warning" data-toggle="modal"
-                                                        data-target="#modal-default">
-                                                <i class='fas fa-edit'></i>
-                                                Modifier
-                                            </button>
-                                        </form>
-                                    </td>
-                                    <td>
-                                        <form class="delete">
-                                            @csrf
-                                            <input type="hidden" id="id" value="{{$u -> id}}" name="id">
-                                            <button type="submit" class="btn btn-danger"><i class='fas fa-trash'></i> Supprimer</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                                @endforeach--}}
+                                
                             </tbody>
                         </table>
                     </div>
@@ -231,13 +208,33 @@
 $('#loader').hide();
 $(function() {
     $('#loader').hide();
+    $('#loader2').hide();
+    var user_list = $('#user_list').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: "{{ route('showListUser')}}",
+        columns: [
+            {data: 'id',name: 'id'},
+            {data: 'pays_id', name: 'pays_id'},
+            {data: 'last_name',name: 'last_name'},
+            {data: 'first_name',name: 'first_name'},
+            {data: 'email',name: 'email'},
+            {data: 'num1',name: 'num1'},
+            {data: 'num2',name: 'num2'},
+            {data: 'gender',name: 'gender'},
+            {data: 'school_id',name: 'school_id'},
+            // {data: 'created_at',name: 'created_at'},
+            {data: 'action', name: 'action', orderable: false, searchable: false},
+        ],
+    });
+
     //Ajax pour ajouter user
     $('#add').submit(function() {
         event.preventDefault();
         $('#loader').fadeIn();
         $.ajax({
             type: 'POST',
-            url: 'utilisateurs/ajouter',
+            url: 'utilisateurs/add_user',
             //enctype: 'multipart/form-data',
             data: $('#add').serialize(),
             datatype: 'json',
@@ -250,11 +247,7 @@ $(function() {
                         title: data.title,
                         text: data.msg,
                     }).then(() => {
-                        if (data.redirect_to != null) {
-                            window.location.assign(data.redirect_to)
-                        } else {
-                            window.location.reload()
-                        }
+                        user_list.draw();
                     })
                 } else {
                     $('#loader').hide();
@@ -279,6 +272,31 @@ $(function() {
             }
         });
         return false;
+    });
+
+    $('body').on('click', '.editUser', function () {
+        var csrfToken = $('meta[name="csrf-token"]').attr('content');
+        var id = $(this).data('id');
+        alert(csrfToken)
+        $('#Modal_update').modal('show');
+        $('#userId').val(id);
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            type: 'POST',
+            url: 'utilisateurs/getUserInfoById',
+            data: { id: id},
+            datatype: 'json',
+            success: function (data){
+                console.log(data)
+                if (data.status)
+                {
+                    // $('#townName').val(data.townName);
+                    $('#Modal_update').modal('show');
+                }
+            },
+        });
     });
 
     //Selectionner le pays a modifier

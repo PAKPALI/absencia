@@ -91,7 +91,7 @@
                 <a href="#" class="nav-link active">
                   <i class="nav-icon fas fa-users"></i>
                   <p>
-                    Utilisateurs
+                  Administrateurs
                     <i class="fas fa-angle-left right"></i>
                   </p>
                 </a>
@@ -99,7 +99,7 @@
                   <li class="nav-item">
                     <a href="{{route('user')}}" class="nav-link">
                       <i class="far fa-circle nav-icon"></i>
-                      <p>Ajouter des utilisateurs</p>
+                      <p>Ajouter</p>
                     </a>
                   </li>
                 </ul>
@@ -109,7 +109,7 @@
                 <a href="#" class="nav-link">
                   <i class="nav-icon fas fa-users"></i>
                   <p>
-                    Utilisateurs
+                    Administrateurs
                     <i class="fas fa-angle-left right"></i>
                   </p>
                 </a>
@@ -117,13 +117,13 @@
                   <li class="nav-item">
                     <a href="{{route('user')}}" class="nav-link">
                       <i class="far fa-circle nav-icon"></i>
-                      <p>Ajouter des utilisateur</p>
+                      <p>Ajouter</p>
                     </a>
                   </li>
                   <li class="nav-item">
                     <a href="" class="nav-link">
                       <i class="far fa-circle nav-icon"></i>
-                      <p>Gérer des utilisateur</p>
+                      <p>Gérer des administrateurs</p>
                     </a>
                   </li>
                 </ul>

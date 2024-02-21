@@ -50,12 +50,12 @@ Route::prefix('utilisateurs')->middleware(['auth'])->group(function () {
     // Get
     Route::get('', [UserController::class, 'user'])->name('user');
     Route::get('profil', [UserController::class, 'profil'])->name('profil');
+    Route::get('showListUser', [UserController::class, 'showListUser'])->name('showListUser');
 
     //post
-    Route::post('ajouter', [UserController::class, "ajouter"]);
-    Route::post('ajouter_admin', [UserController::class, "ajouter_admin"]);
-    Route::post('update', [UserController::class, 'update']);
-    Route::post('parametre', [UserController::class, 'parametre']);
+    Route::post('add_user', [UserController::class, "add_user"]);
+    Route::post('update_user', [UserController::class, 'update_user']);
+    Route::post('getUserInfoById', [UserController::class, 'getUserInfoById']);
     Route::post('connected', [UserController::class, 'connected']);
     Route::post('status', [UserController::class, 'status']);
     Route::post('delete', [UserController::class, 'delete']);

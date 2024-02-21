@@ -2,8 +2,7 @@
 
 namespace App\Models;
 
-use App\Models\Depense;
-use App\Models\SousCaisse;
+use App\Models\Pays;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -29,15 +28,12 @@ class User extends Authenticatable
         'gender',
         'school_id',
         'password',
-        'type_user',
+        'user_type',
     ];
 
-    public function sousCaisse(){
-        return  $this ->belongsTo(SousCaisse::class);
-    }
 
-    public function depense(){
-        return $this->hasMany(Depense::class);
+    public function country(){
+        return  $this ->belongsTo(Pays::class,'pays_id');
     }
 
     /**
