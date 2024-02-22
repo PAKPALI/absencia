@@ -78,8 +78,28 @@ class LoginController extends Controller
                         'check' => Auth::check(),
                         "msg" => "connexion reussie."
                     ]);
+                }elseif($user->user_type == 2){
+                    if($user->connected){
+                        Auth::login($user);         
+                        return response()->json([
+                            "status" => true,
+                            "reload" => true,
+                            "redirect_to" => route('tableau'),
+                            "title" => "CONNEXION REUSSI",
+                            'check' => Auth::check(),
+                            "msg" => "connexion reussie."
+                        ]);
+                    }else{
+                        return response()->json([
+                            "status" => false,
+                            "reload" => true,
+                            'check' => Auth::check(),
+                            "title" => "CONNECTION ECHOUEE",
+                            "msg" => "Vous n'etes pas autoriser à vous connecter"
+                        ]);
+                    }
                 }else{
-                    if($user->connected == 1){
+                    if($user->connected){
                         Auth::login($user);
                         // $request->session()->regenerate();           
     

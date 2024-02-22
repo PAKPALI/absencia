@@ -8,6 +8,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\BanqueController;
 use App\Http\Controllers\CaisseController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\SousCaisseController;
 use App\Http\Controllers\TypeDepenseController;
 
@@ -53,13 +54,24 @@ Route::prefix('utilisateurs')->middleware(['auth'])->group(function () {
     Route::get('showListUser', [UserController::class, 'showListUser'])->name('showListUser');
 
     //post
+    Route::post('getUserInfoById', [UserController::class, 'getUserInfoById']);
     Route::post('add_user', [UserController::class, "add_user"]);
     Route::post('update_user', [UserController::class, 'update_user']);
-    Route::post('getUserInfoById', [UserController::class, 'getUserInfoById']);
-    Route::post('connected', [UserController::class, 'connected']);
-    Route::post('status', [UserController::class, 'status']);
-    Route::post('delete', [UserController::class, 'delete']);
+    Route::post('delete_user', [UserController::class, 'delete_user']);
     Route::post('updatePassword', [UserController::class, 'updatePassword']);
+});
+
+// manage school
+Route::prefix('school')->middleware(['auth'])->group(function () {
+    // Get
+    Route::get('', [SchoolController::class, 'school'])->name('school');
+    Route::get('showListSchool', [SchoolController::class, 'showListSchool'])->name('showListSchool');
+
+    //post
+    Route::post('getSchoolInfoById', [SchoolController::class, 'getSchoolInfoById']);
+    Route::post('add', [SchoolController::class, "add"]);
+    Route::post('update', [SchoolController::class, 'update']);
+    Route::post('delete', [SchoolController::class, 'delete']);
 });
 
 Route::post('outUser', [UserController::class, 'outUser'])->name('outUser');

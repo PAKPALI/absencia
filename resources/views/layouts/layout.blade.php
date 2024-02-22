@@ -65,6 +65,7 @@
         @if(Auth::user()->user_type ==1)
             @include('partials.menu')
         @elseif(Auth::user()->user_type ==2)
+            @include('partials.menuAdmin')
         @else  
         @endif
 

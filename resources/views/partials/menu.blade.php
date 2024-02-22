@@ -16,7 +16,7 @@
             <img src="{{asset('admin/man/img/user2-160x160.jpg')}}" class="img-circle elevation-2" alt="User Image">
           </div>
           <div class="info">
-            <a href="{{route('profil')}}" class="d-block">{{ strtoupper(Auth::user()->last_name)}}</a>
+            <a href="{{route('profil')}}" class="d-block">{{ strtoupper(Auth::user()->last_name)}} {{strtoupper(Auth::user()->first_name)}}</a>
           </div>
         </div>
 
