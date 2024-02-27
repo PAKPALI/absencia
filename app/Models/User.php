@@ -36,6 +36,9 @@ class User extends Authenticatable
     public function country(){
         return  $this ->belongsTo(Pays::class,'pays_id');
     }
+    public function school(){
+        return  $this ->belongsTo(School::class,'school_id');
+    }
 
     /**
      * The attributes that should be hidden for serialization.

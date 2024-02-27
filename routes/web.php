@@ -9,6 +9,8 @@ use App\Http\Controllers\BanqueController;
 use App\Http\Controllers\CaisseController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\SchoolController;
+use App\Http\Controllers\ClassroomController;
+use App\Http\Controllers\ProfessorController;
 use App\Http\Controllers\SousCaisseController;
 use App\Http\Controllers\TypeDepenseController;
 
@@ -72,6 +74,32 @@ Route::prefix('school')->middleware(['auth'])->group(function () {
     Route::post('add', [SchoolController::class, "add"]);
     Route::post('update', [SchoolController::class, 'update']);
     Route::post('delete', [SchoolController::class, 'delete']);
+});
+
+// manage professor
+Route::prefix('professor')->middleware(['auth'])->controller(ProfessorController::class)->group(function () {
+    // Get
+    Route::get('', 'professor')->name('professor');
+    Route::get('showListProfessor', 'showListProfessor')->name('showListProfessor');
+
+    //post
+    Route::post('getProfessorInfoById', 'getProfessorInfoById');
+    Route::post('add', "add");
+    Route::post('update', 'update');
+    Route::post('delete', 'delete');
+});
+
+// manage classrooom
+Route::prefix('classroom')->middleware(['auth'])->controller(ClassroomController::class)->group(function () {
+    // Get
+    Route::get('','classroom')->name('classroom');
+    Route::get('showListClassroom', 'showListClassroom')->name('showListClassroom');
+
+    //post
+    Route::post('getClassroomInfoById', 'getClassroomInfoById');
+    Route::post('add', "add");
+    Route::post('update', 'update');
+    Route::post('delete', 'delete');
 });
 
 Route::post('outUser', [UserController::class, 'outUser'])->name('outUser');

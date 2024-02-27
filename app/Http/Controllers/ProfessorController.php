@@ -2,38 +2,35 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Pays;
 use App\Models\User;
+use App\Models\School;
+use App\Models\Professor;
 use Illuminate\Http\Request;
-use Yajra\DataTables\DataTables;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
 
-class UserController extends Controller
+class ProfessorController extends Controller
 {
-    public function user()
+    public function professor()
     {
-        $Country = Pays::all();
-
-        return view('user',[
-            'Country' => $Country,
-        ]);
+        return view('professor');
     }
 
-    public function showListUser(Request $request)
+    public function showListProfessor(Request $request)
     {
         // composer require yajra/laravel-datatables-oracle
         if(request()->ajax()){
-            $Users = User::where('user_type', 2);
+            $Users = User::where('user_type', 3)->where('school_id', Auth::user()->school_id);
             return DataTables::of($Users)
                 ->addIndexColumn()
                 ->editColumn('pays_id' , function($Users){
                     return strtoupper($Users->country->nom);
                 })
                 ->editColumn('school_id' , function($Users){
-                    return $Users->school_id ?? '-';
+                    return $Users->school->name ?? '-';
                 })
                 // ->editColumn('created_at' , function($Users){
                 //     return $Users->created_at->translatedFormat('d M Y');
@@ -46,22 +43,16 @@ class UserController extends Controller
                 ->rawColumns(['action'])
                 ->make(true);
         }
-        return view('admin.town');
     }
 
-    public function add_user(Request $request)
+    public function add(Request $request)
     {
         $error_messages = [
             "last_name.required" => "Remplir le champ Nom!",
             "first_name.required" => "Remplir le champ Prénom!",
             "email.required" => "Remplir le champ Email!",
             "email.unique" => "L'email ".$request-> email. " existe déjà!",
-            "num1.required" => "Remplir le champ Numéro 1!",
-            "num1.numeric" => "Remplir le champ Numéro 1 avec des chiffres!",
-            // "num2.required" => "Remplir le champ Numéro 2!",
-            "num1.numeric" => "Remplir le champ Numéro 2 avec des chiffres!",
             "gender.required" => "Sélectionnez le genre!",
-            "pays_id.required" => "Sélectionnez le pays!",
             "password.required" => "Remplir le champ mot de passe!",
             "password.min" => "Le mot de passe doit comporter au moins 8 caracteres!",
             "password.confirmed" => "Les deux champs de mots de passe ne correspondent pas",
@@ -71,10 +62,7 @@ class UserController extends Controller
             'last_name' => ['required'],
             'first_name' => ['required'],
             'email' => ['required','unique:users'],
-            'num1' => ['required','numeric'],
-            'num2' => ['numeric'],
             'gender' => ['required'],
-            'pays_id' => ['required'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ], $error_messages);
 
@@ -87,14 +75,13 @@ class UserController extends Controller
             ]);
 
         User::create([
+            'pays_id' => Auth::user()->pays_id,
+            'school_id' => Auth::user()->school_id,
             'last_name' => $request-> last_name,
             'first_name' => $request-> first_name,
             'email' => $request-> email,
-            'num1' => $request-> num1,
-            'num2' => $request-> num2,
             'gender' => $request-> gender,
-            'pays_id' => $request-> pays_id,
-            'user_type' => 2,
+            'user_type' => 3,
             'password' => Hash::make($request['password']),
         ]);
 
@@ -103,12 +90,12 @@ class UserController extends Controller
             "reload" => true,
             // "redirect_to" => route('user'),
             "title" => "AJOUT REUSSI",
-            "msg" => "L'utilisateur au nom de ".$request-> last_name." a bien été ajouté"
+            "msg" => "Le professeur au nom de ".$request-> last_name." a bien été ajouté"
         ]);
     }
 
     //get user info by Id
-    public function getUserInfoById(Request $request)
+    public function getProfessorInfoById(Request $request)
     {
         $id = $request-> id;
         $User = User::find($id);
@@ -117,35 +104,25 @@ class UserController extends Controller
             "last_name" => $User->last_name,
             "first_name" => $User->first_name,
             "email" => $User->email,
-            "num1" => $User->num1,
-            "num2" => $User->num2,
             "gender" => $User->gender,
-            "pays_id" => $User->pays_id,
         ]);
     }
 
-    public function update_user(Request $request)
+    public function update(Request $request)
     {
         $error_messages = [
             "last_name.required" => "Remplir le champ Nom!",
             "first_name.required" => "Remplir le champ Prénom!",
             "email.required" => "Remplir le champ Email!",
             // "email.unique" => "L'email ".$request-> email. " existe déjà!",
-            "num1.required" => "Remplir le champ Numéro 1!",
-            "num1.numeric" => "Remplir le champ Numéro 1 avec des chiffres!",
-            "num2.numeric" => "Remplir le champ Numéro 2 avec des chiffres!",
             "gender.required" => "Sélectionnez le genre!",
-            "pays_id.required" => "Sélectionnez le pays!",
         ];
 
         $validator = Validator::make($request->all(),[
             'last_name' => ['required'],
             'first_name' => ['required'],
             'email' => ['required'],
-            'num1' => ['required'],
-            'num2' => ['numeric'],
             'gender' => ['required'],
-            'pays_id' => ['required'],
         ], $error_messages);
 
         if($validator->fails())
@@ -166,10 +143,7 @@ class UserController extends Controller
                 $search -> update([
                     'last_name' => $request-> last_name,
                     'first_name' => $request-> first_name,
-                    'num1' => $request-> num1,
-                    'num2' => $request-> num2,
                     'gender' => $request-> gender,
-                    'pays_id' => $request-> pays_id,
                 ]);
                 return response()->json([
                     "status" => true,
@@ -184,10 +158,7 @@ class UserController extends Controller
                     'last_name' => $request-> last_name,
                     'first_name' => $request-> first_name,
                     'email' => $request-> email,
-                    'num1' => $request-> num1,
-                    'num2' => $request-> num2,
                     'gender' => $request-> gender,
-                    'pays_id' => $request-> pays_id,
                 ]);
                 return response()->json([
                     "status" => true,
@@ -248,96 +219,5 @@ class UserController extends Controller
                 "msg" => "Utilisateur inexistant"
             ]);
         }
-    }
-
-    public function profil()
-    {
-        return view('profil');
-    }
-
-    public function updatePassword(Request $request)
-    {
-
-        $error_messages = [
-            "AM.required" => "Remplir le champ ancien mot de passe!",
-            "NM.required" => "Remplir le champ nouveau mot de passe!",
-            "CM.required" => "Remplir le champ confirmer mot de passe!",
-            "NM.min" => "Le nouveau mot de passe doit comporter au moins 8 caracteres!",
-        ];
-
-        $validator = Validator::make($request->all(),[
-            'AM' => ['required', 'min:8'],
-            'NM' => ['required', 'min:8'],
-            'CM' => ['required', 'min:8'],
-        ], $error_messages);
-
-        if($validator->fails())
-            return response()->json([
-            "status" => false,
-            "reload" => false,
-            "title" => "CONNECTION ECHOUEE",
-            "msg" => $validator->errors()->first()]);
-
-        $id = $request-> id;
-        $User = User::find($id);
-
-        if(Hash::check($request-> AM, $User-> password)){
-
-            if($request-> NM == $request-> CM){
-                $search = User::find($id);
-                if($search){
-                    $search -> update([
-                        'password' =>  Hash::make($request-> CM)
-                    ]);
-                    return response()->json([
-                        "status" => true,
-                        "reload" => true,
-                        "redirect_to" => "0",
-                        "title" => "MIS A JOUR REUSSIE",
-                        "msg" => "Mis a jour reussie"
-                    ]);
-                }
-            }else{
-
-                return response()->json([
-
-                    "status" => false,
-                    "reload" => false,
-                    "title" => "CONNECTION ECHOUE",
-                    "msg" => "Le nouveau mot de passe et la confirmation du mot de passe sont différents"
-    
-                ]);
-
-            }
-
-        }else{
-
-            return response()->json([
-
-                "status" => false,
-                "reload" => false,
-                "title" => "CONNECTION ECHOUE",
-                "msg" => "L'ancien mot de passe saisie ne correspond pas au mot de passe enregistré dans la base de donnée"
-
-            ]);
-        }
-    }
-
-    public function outUser(Request $request)
-    {
-        $id =  $request->id;
-        // $user = User::find($id);
-
-        // Auth::logout($user);
-        $request->session()->invalidate();
-
-        return response()->json([
-            "status" => true,
-            "reload" => true,
-            "redirect_to" => route('conn'),
-            "title" => "DECONNEXION REUSSI",
-            'check' => Auth::check(),
-            "msg" => "Au revoir, a bientot"
-        ]);
     }
 }

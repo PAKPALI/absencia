@@ -5,7 +5,7 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1>ECOLE</h1>
+                <h1>PROFESSEURS</h1>
             </div>
             <div class="col-sm-6">
                 <!-- <ol class="breadcrumb float-sm-right">
@@ -27,30 +27,38 @@
                     <div class="modal-dialog modal-xl">
                         <div class="modal-content">
                             <div class="modal-header bg-warning">
-                                <h4 class="modal-title">MODIFIER ECOLE</h4>
+                                <h4 class="modal-title">MODIFIER PROFESSEUR</h4>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
-                            <form id="updateSchool">
+                            <form id="updateUser">
                                 @csrf
                                 <div class="card-body">
-                                    <input type="hidden" name="id" class="form-control" id="school_id">
+                                    <input type="hidden" name="id" class="form-control" id="userId">
                                     <div class="row">
-                                        <div class="form-group col-4">
-                                            <label for="name">Nom</label>
-                                            <input type="text" name="name" class="form-control" id="name"
+                                        <div class="form-group col-6">
+                                            <label for="last_name">Nom</label>
+                                            <input type="text" name="last_name" class="form-control" id="last_name"
                                                 placeholder="Nom">
                                         </div>
-                                        <div class="form-group col-4">
+                                        <div class="form-group col-6">
+                                            <label for="first_name">Prénom</label>
+                                            <input type="text" name="first_name" class="form-control" id="first_name"
+                                                placeholder="Prénom">
+                                        </div>
+                                        <div class="form-group col-6">
                                             <label for="email">Email</label>
                                             <input type="email" name="email" class="form-control" id="email"
                                             placeholder="Email">
                                         </div>
-                                        <div class="form-group col-4">
-                                            <label for="numero">Numéro</label>
-                                            <input type="number" name="num1" class="form-control" id="numero"
-                                                placeholder="Numéro">
+                                        <div class="form-group col-6">
+                                            <label >Genre</label>
+                                            <select id="gender" name="gender" class="form-control">
+                                                <option value="">Sélectionnez le genre</option>
+                                                <option value="M">Masculin</option>
+                                                <option value="F">Feminin</option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
@@ -68,62 +76,85 @@
                     </div>
                 </div>
 
-                @if(!Auth::user()->school_id)
-                    <div class="card card-primary">
-                        <div class="card-header">
-                            <h3 class="card-title"><small>Ajouter une école</small></h3>
-                        </div>
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title"><small>Ajouter les professeurs</small></h3>
+                    </div>
 
-                        <form id="add">
-                            @csrf
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="form-group col-4">
-                                        <label for="exampleInputText0">Nom</label>
-                                        <input type="text" name="name" class="form-control" id="exampleInputText0"
-                                            placeholder="Nom">
-                                    </div>
-                                    <div class="form-group col-4">
-                                        <label for="exampleInputText2">Email</label>
-                                        <input type="email" name="email" class="form-control" id="exampleInputText2"
-                                        placeholder="Email">
-                                    </div>
-                                    <div class="form-group col-4">
-                                        <label for="exampleInputText3">Numéro</label>
-                                        <input type="number" name="num1" class="form-control" id="exampleInputText3"
-                                            placeholder="Numéro">
-                                    </div>
+                    <form id="add">
+                        @csrf
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="form-group col-4">
+                                    <label for="exampleInputText0">Nom</label>
+                                    <input type="text" name="last_name" class="form-control" id="exampleInputText0"
+                                        placeholder="Nom">
                                 </div>
-                                <!-- loader -->
-                                <div id="add_loader" class="text-center">
-                                    <img class="animation__shake" src="{{asset('img/trimax.gif')}}" alt="TRIMAX_Logo"
-                                        height="70" width="70">
+                                <div class="form-group col-4">
+                                    <label for="exampleInputText1">Prénom</label>
+                                    <input type="text" name="first_name" class="form-control" id="exampleInputText1"
+                                        placeholder="Prénom">
+                                </div>
+                                <div class="form-group col-4">
+                                    <label for="exampleInputText2">Email</label>
+                                    <input type="email" name="email" class="form-control" id="exampleInputText2"
+                                    placeholder="Email">
+                                </div>
+                                <div class="form-group col-4">
+                                    <label >Genre</label>
+                                    <select name="gender" class="form-control">
+                                        <option value="">Sélectionnez le genre</option>
+                                        <option value="M">Masculin</option>
+                                        <option value="F">Feminin</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-4">
+                                    <label for="exampleInputText5">Mot de passe</label>
+                                    <input type="password" name="password" class="form-control" id="exampleInputText5"
+                                        placeholder="mot de passe">
+                                </div>
+                                <div class="form-group col-4">
+                                    <label for="exampleInputText6">Confirmer mot de passe</label>
+                                    <input type="password" name="password_confirmation" class="form-control" id="exampleInputText6"
+                                        placeholder="Confirmez mot de passe">
                                 </div>
                             </div>
-
+                            
+                            <!-- loader -->
+                            <div id="add_loader" class="text-center">
+                                <img class="animation__shake" src="{{asset('img/trimax.gif')}}" alt="TRIMAX_Logo"
+                                    height="70" width="70">
+                            </div>
+                        </div>
+                        @if(Auth::user()->school_id)
                             <div class="card-footer">
                                 <button type="submit" class="btn btn-primary">Valider</button>
                             </div>
-                        </form>
-                    </div>
-                @endif
+                        @else
+                            <div class="card-footer">
+                                <a id="disabled_button" class="btn btn-primary">Valider</a>
+                                <h6 id="text" class="text-danger"></h6>
+                            </div>
+                        @endif
+                    </form>
+                </div>
 
                 <div class="card mt-5">
                     <div class="card-header bg-primary">
-                        <h2 class="card-title">GESTION DE L'ECOLE</h2>
+                        <h2 class="card-title">LISTE DES PROFESSEURS</h2>
                     </div>
 
                     <div class="card-body">
-                        <table id="school_list" class="table table-bordered table-striped">
+                        <table id="user_list" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
                                     <th>N°</th>
-                                    <th>Pays</th>
                                     <th>Nom</th>
+                                    <th>Prénom</th>
                                     <th>Email</th>
-                                    <th>Numéro</th>
-                                    <th>Creer par</th>
-                                    <th>Status</th>
+                                    <th>Genre</th>
+                                    <th>Ecole</th>
+                                    <th>Statut</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -146,29 +177,30 @@
     $(function() {
         $('#loader').hide();
         $('#loader2').hide();
-        
+
         $('body').on('click', '#disabled_button', function () {
-            $('#text').html('Vous avez déjà une école a votre actif');
+            $('#text').html('Veuillez enregistrer une école');
         })
 
-        var school_list = $('#school_list').DataTable({
+        var user_list = $('#user_list').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route('showListSchool')}}",
+            ajax: "{{ route('showListProfessor')}}",
             columns: [
                 {data: 'id',name: 'id'},
-                {data: 'pays_id', name: 'pays_id'},
-                {data: 'name',name: 'name'},
+                {data: 'last_name',name: 'last_name'},
+                {data: 'first_name',name: 'first_name'},
                 {data: 'email',name: 'email'},
-                {data: 'numero',name: 'numero'},
-                {data: 'users_id',name: 'users_id'},
+                {data: 'gender',name: 'gender'},
+                {data: 'school_id',name: 'school_id'},
                 {data: 'connected',name: 'connected'},
                 // {data: 'created_at',name: 'created_at'},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ],
+
             drawCallback: function() {
                 $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
-                $('#school_list').css('width','100%');
+                $('#user_list').css('width','100%');
             },
             rowCallback: function(row, data, iDisplayIndex) {
                 var status ='';
@@ -187,7 +219,7 @@
             $('#add_loader').fadeIn();
             $.ajax({
                 type: 'POST',
-                url: 'school/add',
+                url: 'professor/add',
                 //enctype: 'multipart/form-data',
                 data: $('#add').serialize(),
                 datatype: 'json',
@@ -200,7 +232,7 @@
                             title: data.title,
                             text: data.msg,
                         }).then(() => {
-                            school_list.draw();
+                            user_list.draw();
                         })
                     } else {
                         $('#add_loader').fadeOut();
@@ -227,7 +259,7 @@
             return false;
         });
 
-        $('body').on('click', '.editSchool', function () {
+        $('body').on('click', '.editUser', function () {
             $('#update_loader').fadeOut();
             var csrfToken = $('meta[name="csrf-token"]').attr('content');
             var id = $(this).data('id');
@@ -236,30 +268,32 @@
                     'X-CSRF-TOKEN': csrfToken
                 },
                 type: 'POST',
-                url: 'school/getSchoolInfoById',
+                url: 'professor/getProfessorInfoById',
                 data: { id: id},
                 datatype: 'json',
                 success: function (data){
                     console.log(data)
                     if (data.status)
                     {
-                        $('#school_id').val(id);
-                        $('#name').val(data.name);
+                        // $('#townName').val(data.townName);
+                        $('#userId').val(id);
+                        $('#last_name').val(data.last_name);
+                        $('#first_name').val(data.first_name);
                         $('#email').val(data.email);
-                        $('#numero').val(data.numero);
+                        $('#gender').val(data.gender);
                     }
                 },
             });
         });
 
-        $('#updateSchool').submit(function(){
+        $('#updateUser').submit(function(){
             event.preventDefault();
             $('#update_loader').fadeIn();
             $.ajax({
                 type: 'POST',
-                url: 'school/update',
+                url: 'professor/update',
                 //enctype: 'multipart/form-data',
-                data: $('#updateSchool').serialize(),
+                data: $('#updateUser').serialize(),
                 datatype: 'json',
                 success: function (data){
                     console.log(data)
@@ -271,7 +305,7 @@
                             text: data.msg,
                         }).then(() => {
                             $('#modal-update').modal('hide');
-                            school_list.draw();
+                            user_list.draw();
                         })
                     }else{
                         $('#update_loader').fadeOut();

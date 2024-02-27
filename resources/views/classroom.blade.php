@@ -5,7 +5,7 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1>ECOLE</h1>
+                <h1>CLASSE</h1>
             </div>
             <div class="col-sm-6">
                 <!-- <ol class="breadcrumb float-sm-right">
@@ -27,30 +27,38 @@
                     <div class="modal-dialog modal-xl">
                         <div class="modal-content">
                             <div class="modal-header bg-warning">
-                                <h4 class="modal-title">MODIFIER ECOLE</h4>
+                                <h4 class="modal-title">MODIFIER CLASSE</h4>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
-                            <form id="updateSchool">
+                            <form id="updateUser">
                                 @csrf
                                 <div class="card-body">
-                                    <input type="hidden" name="id" class="form-control" id="school_id">
+                                    <input type="hidden" name="id" class="form-control" id="userId">
                                     <div class="row">
-                                        <div class="form-group col-4">
-                                            <label for="name">Nom</label>
-                                            <input type="text" name="name" class="form-control" id="name"
+                                        <div class="form-group col-6">
+                                            <label for="last_name">Nom</label>
+                                            <input type="text" name="last_name" class="form-control" id="last_name"
                                                 placeholder="Nom">
                                         </div>
-                                        <div class="form-group col-4">
+                                        <div class="form-group col-6">
+                                            <label for="first_name">Prénom</label>
+                                            <input type="text" name="first_name" class="form-control" id="first_name"
+                                                placeholder="Prénom">
+                                        </div>
+                                        <div class="form-group col-6">
                                             <label for="email">Email</label>
                                             <input type="email" name="email" class="form-control" id="email"
                                             placeholder="Email">
                                         </div>
-                                        <div class="form-group col-4">
-                                            <label for="numero">Numéro</label>
-                                            <input type="number" name="num1" class="form-control" id="numero"
-                                                placeholder="Numéro">
+                                        <div class="form-group col-6">
+                                            <label >Genre</label>
+                                            <select id="gender" name="gender" class="form-control">
+                                                <option value="">Sélectionnez le genre</option>
+                                                <option value="M">Masculin</option>
+                                                <option value="F">Feminin</option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
@@ -68,62 +76,63 @@
                     </div>
                 </div>
 
-                @if(!Auth::user()->school_id)
-                    <div class="card card-primary">
-                        <div class="card-header">
-                            <h3 class="card-title"><small>Ajouter une école</small></h3>
-                        </div>
-
-                        <form id="add">
-                            @csrf
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="form-group col-4">
-                                        <label for="exampleInputText0">Nom</label>
-                                        <input type="text" name="name" class="form-control" id="exampleInputText0"
-                                            placeholder="Nom">
-                                    </div>
-                                    <div class="form-group col-4">
-                                        <label for="exampleInputText2">Email</label>
-                                        <input type="email" name="email" class="form-control" id="exampleInputText2"
-                                        placeholder="Email">
-                                    </div>
-                                    <div class="form-group col-4">
-                                        <label for="exampleInputText3">Numéro</label>
-                                        <input type="number" name="num1" class="form-control" id="exampleInputText3"
-                                            placeholder="Numéro">
-                                    </div>
-                                </div>
-                                <!-- loader -->
-                                <div id="add_loader" class="text-center">
-                                    <img class="animation__shake" src="{{asset('img/trimax.gif')}}" alt="TRIMAX_Logo"
-                                        height="70" width="70">
-                                </div>
-                            </div>
-
-                            <div class="card-footer">
-                                <button type="submit" class="btn btn-primary">Valider</button>
-                            </div>
-                        </form>
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title"><small>Ajouter les classes</small></h3>
                     </div>
-                @endif
+
+                    <form id="add">
+                        @csrf
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="form-group col-6">
+                                    <label for="exampleInputText0">Nom</label>
+                                    <input type="text" name="name" class="form-control" id="exampleInputText0"
+                                        placeholder="Nom">
+                                </div>
+                                <div class="form-group col-6">
+                                    <label>Responsable</label>
+                                    <select name="manager" class="form-control">
+                                        <option value="">Sélectionnez le responsable</option>
+                                        @foreach ($Professor as $p)
+                                            <option value="{{$p->id}}">{{strtoupper($p->last_name)}} {{strtoupper($p->first_name)}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group col-12">
+                                    <label>Professeurs</label>
+                                    <select name="professors" class="duallistbox" multiple="multiple">
+                                        @foreach ($Professor as $p)
+                                            <option value="{{$p->id}}">{{strtoupper($p->last_name)}} {{strtoupper($p->first_name)}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <!-- loader -->
+                            <div id="add_loader" class="text-center">
+                                <img class="animation__shake" src="{{asset('img/trimax.gif')}}" alt="TRIMAX_Logo"
+                                    height="70" width="70">
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-primary">Valider</button>
+                        </div>
+                    </form>
+                </div>
 
                 <div class="card mt-5">
                     <div class="card-header bg-primary">
-                        <h2 class="card-title">GESTION DE L'ECOLE</h2>
+                        <h2 class="card-title">LISTE DES CLASSES</h2>
                     </div>
 
                     <div class="card-body">
-                        <table id="school_list" class="table table-bordered table-striped">
+                        <table id="class_list" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
                                     <th>N°</th>
-                                    <th>Pays</th>
                                     <th>Nom</th>
-                                    <th>Email</th>
-                                    <th>Numéro</th>
-                                    <th>Creer par</th>
-                                    <th>Status</th>
+                                    <th>Responsable</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -140,44 +149,29 @@
 </section>
 
 <script>
-    $('#loader').hide();
-    $('#update_loader').fadeOut();
-    $('#add_loader').fadeOut();
     $(function() {
+        //Bootstrap Duallistbox
+        $('.duallistbox').bootstrapDualListbox()
         $('#loader').hide();
         $('#loader2').hide();
-        
-        $('body').on('click', '#disabled_button', function () {
-            $('#text').html('Vous avez déjà une école a votre actif');
-        })
+        $('#update_loader').fadeOut();
+        $('#add_loader').fadeOut();
 
-        var school_list = $('#school_list').DataTable({
+        var user_list = $('#class_list').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route('showListSchool')}}",
+            ajax: "{{ route('showListClassroom')}}",
             columns: [
                 {data: 'id',name: 'id'},
-                {data: 'pays_id', name: 'pays_id'},
                 {data: 'name',name: 'name'},
-                {data: 'email',name: 'email'},
-                {data: 'numero',name: 'numero'},
-                {data: 'users_id',name: 'users_id'},
-                {data: 'connected',name: 'connected'},
+                {data: 'Manager',name: 'Manager'},
                 // {data: 'created_at',name: 'created_at'},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ],
+
             drawCallback: function() {
                 $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
-                $('#school_list').css('width','100%');
-            },
-            rowCallback: function(row, data, iDisplayIndex) {
-                var status ='';
-                if (data.connected) {
-                    status +=`<span class='badge bg-success'>Actif</span>`;
-                }else{
-                    status +=`<span class='badge bg-danger'>Désactif</span>`;
-                }
-                $('td:eq(6)', row).html(status);
+                $('#class_list').css('width','100%');
             },
         });
 
@@ -187,7 +181,7 @@
             $('#add_loader').fadeIn();
             $.ajax({
                 type: 'POST',
-                url: 'school/add',
+                url: 'classroom/add',
                 //enctype: 'multipart/form-data',
                 data: $('#add').serialize(),
                 datatype: 'json',
@@ -200,7 +194,7 @@
                             title: data.title,
                             text: data.msg,
                         }).then(() => {
-                            school_list.draw();
+                            class_list.draw();
                         })
                     } else {
                         $('#add_loader').fadeOut();
@@ -227,7 +221,7 @@
             return false;
         });
 
-        $('body').on('click', '.editSchool', function () {
+        $('body').on('click', '.editUser', function () {
             $('#update_loader').fadeOut();
             var csrfToken = $('meta[name="csrf-token"]').attr('content');
             var id = $(this).data('id');
@@ -236,30 +230,32 @@
                     'X-CSRF-TOKEN': csrfToken
                 },
                 type: 'POST',
-                url: 'school/getSchoolInfoById',
+                url: 'professor/getProfessorInfoById',
                 data: { id: id},
                 datatype: 'json',
                 success: function (data){
                     console.log(data)
                     if (data.status)
                     {
-                        $('#school_id').val(id);
-                        $('#name').val(data.name);
+                        // $('#townName').val(data.townName);
+                        $('#userId').val(id);
+                        $('#last_name').val(data.last_name);
+                        $('#first_name').val(data.first_name);
                         $('#email').val(data.email);
-                        $('#numero').val(data.numero);
+                        $('#gender').val(data.gender);
                     }
                 },
             });
         });
 
-        $('#updateSchool').submit(function(){
+        $('#updateUser').submit(function(){
             event.preventDefault();
             $('#update_loader').fadeIn();
             $.ajax({
                 type: 'POST',
-                url: 'school/update',
+                url: 'professor/update',
                 //enctype: 'multipart/form-data',
-                data: $('#updateSchool').serialize(),
+                data: $('#updateUser').serialize(),
                 datatype: 'json',
                 success: function (data){
                     console.log(data)
@@ -271,7 +267,7 @@
                             text: data.msg,
                         }).then(() => {
                             $('#modal-update').modal('hide');
-                            school_list.draw();
+                            user_list.draw();
                         })
                     }else{
                         $('#update_loader').fadeOut();
