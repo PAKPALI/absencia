@@ -94,6 +94,8 @@ Route::prefix('classroom')->middleware(['auth'])->controller(ClassroomController
     // Get
     Route::get('','classroom')->name('classroom');
     Route::get('showListClassroom', 'showListClassroom')->name('showListClassroom');
+    Route::get('edit/{id}', 'edit');
+    Route::get('view/{id}', 'view');
 
     //post
     Route::post('getClassroomInfoById', 'getClassroomInfoById');

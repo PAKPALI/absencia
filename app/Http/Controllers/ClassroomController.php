@@ -8,31 +8,33 @@ use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class ClassroomController extends Controller
 {
     public function classroom()
     {
-        $Professor = User::where('user_type', 3)->get();
+        $Professor = User::where('user_type', 3)->where('school_id', Auth::user()->school_id)->get();
 
-        return view('classroom',[
+        return view('classroom/classroom',[
             'Professor' => $Professor,
         ]);
     }
 
-    public function showListProfessor(Request $request)
+    public function showListClassroom(Request $request)
     {
         // composer require yajra/laravel-datatables-oracle
         if(request()->ajax()){
-            $Users = Classroom::where('school_id', Auth::user()->school_id);
-            return DataTables::of($Users)
+            $Class = Classroom::where('schools_id', Auth::user()->school_id);
+            return DataTables::of($Class)
                 ->addIndexColumn()
-                // ->editColumn('created_at' , function($Users){
-                //     return $Users->created_at->translatedFormat('d M Y');
-                // })
+                ->editColumn('manager' , function($Class){
+                    return $Class->user->fullName()?? '-';
+                })
                 ->addColumn('action', function($row){
-                    $btn = '<a href="javascript:void(0)" data-toggle="modal" data-target="#modal-update"  data-id="'.$row->id.'" data-original-title="Edit" class="btn btn-warning btn-sm editUser">Mod</a>';
-                    $btn = $btn.' <a href="javascript:void(0)" data-id="'.$row->id.'" data-original-title="Delete" class="btn btn-danger btn-sm deleteUser">Sup</a>';
+                    $btn = '<a href="javascript:void(0)" data-toggle="modal" data-target="#modal-view"  data-id="'.$row->id.'" data-original-title="Detail" class="btn btn-primary btn-sm mr-1 viewUser">Détail</a>';
+                    $btn = $btn.'<a href="javascript:void(0)" data-toggle="modal" data-target="#modal-update"  data-id="'.$row->id.'" data-original-title="Modifier" class="btn btn-warning btn-sm mr-1 editUser">Mod</a>';
+                    $btn = $btn.' <a href="javascript:void(0)" data-id="'.$row->id.'" data-original-title="Supprimer" class="btn btn-danger btn-sm deleteUser">Sup</a>';
                     return $btn;
                 })
                 ->rawColumns(['action'])
@@ -43,22 +45,15 @@ class ClassroomController extends Controller
     public function add(Request $request)
     {
         $error_messages = [
-            "last_name.required" => "Remplir le champ Nom!",
-            "first_name.required" => "Remplir le champ Prénom!",
-            "email.required" => "Remplir le champ Email!",
-            "email.unique" => "L'email ".$request-> email. " existe déjà!",
-            "gender.required" => "Sélectionnez le genre!",
-            "password.required" => "Remplir le champ mot de passe!",
-            "password.min" => "Le mot de passe doit comporter au moins 8 caracteres!",
-            "password.confirmed" => "Les deux champs de mots de passe ne correspondent pas",
+            "name.required" => "Remplir le champ Nom!",
+            "manager.required" => "Sélectionnez le responsable!",
+            // "professor.required" => "Sélectionnez un ou plusieurs professeurs intervenant!",
         ];
 
         $validator = Validator::make($request->all(),[
-            'last_name' => ['required'],
-            'first_name' => ['required'],
-            'email' => ['required','unique:users'],
-            'gender' => ['required'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'name' => ['required'],
+            'manager' => ['required'],
+            // 'professor' => ['required'],
         ], $error_messages);
 
         if($validator->fails())
@@ -69,15 +64,17 @@ class ClassroomController extends Controller
                 "msg" => $validator->errors()->first()
             ]);
 
-        User::create([
-            'pays_id' => Auth::user()->pays_id,
-            'school_id' => Auth::user()->school_id,
-            'last_name' => $request-> last_name,
-            'first_name' => $request-> first_name,
-            'email' => $request-> email,
-            'gender' => $request-> gender,
-            'user_type' => 3,
-            'password' => Hash::make($request['password']),
+        if($request->professor){
+            $professorId = implode(',', $request->professor);
+        }else{
+            $professorId = '';
+        }
+
+        Classroom::create([
+            'schools_id' => Auth::user()->school_id,
+            'name' => $request-> name,
+            'manager' => $request-> manager,
+            'professor' => $professorId,
         ]);
 
         return response()->json([
@@ -85,7 +82,7 @@ class ClassroomController extends Controller
             "reload" => true,
             // "redirect_to" => route('user'),
             "title" => "AJOUT REUSSI",
-            "msg" => "Le professeur au nom de ".$request-> last_name." a bien été ajouté"
+            "msg" => "La classe au nom de ".$request-> name." a bien été ajoutée"
         ]);
     }
 
@@ -103,67 +100,86 @@ class ClassroomController extends Controller
         ]);
     }
 
+    public function view($id)
+    {
+        $Classroom = Classroom::find($id);
+        $professor_selected_array = [];
+        if($Classroom->professor){
+            $professors_id = explode(',', $Classroom->professor);
+            foreach ($professors_id as $prof) {
+                $user = User::find($prof);
+                array_push($professor_selected_array , $user);
+            }
+        }
+        return view('classroom/view',[
+            'Classroom' => $Classroom,
+            'professor_selected_array' => $professor_selected_array,
+        ]);
+    }
+
+    public function edit($id)
+    {
+        $Classroom = Classroom::find($id);
+        $Professor = User::where('user_type', 3)->where('school_id', Auth::user()->school_id)->get();
+        $professor_selected_array = [];
+        if($Classroom->professor){
+            $professors_id = explode(',', $Classroom->professor);
+            foreach ($professors_id as $prof) {
+                $user = User::find($prof);
+                array_push($professor_selected_array , $user);
+            }
+        }
+        return view('classroom/edit',[
+            'Classroom' => $Classroom,
+            'Professor' => $Professor,
+            'professor_selected_array' => $professor_selected_array,
+        ]);
+    }
+    
+
     public function update(Request $request)
     {
         $error_messages = [
-            "last_name.required" => "Remplir le champ Nom!",
-            "first_name.required" => "Remplir le champ Prénom!",
-            "email.required" => "Remplir le champ Email!",
-            // "email.unique" => "L'email ".$request-> email. " existe déjà!",
-            "gender.required" => "Sélectionnez le genre!",
+            "name.required" => "Remplir le champ Nom!",
+            "manager.required" => "Sélectionnez le responsable!",
+            // "professor.required" => "Sélectionnez un ou plusieurs professeurs intervenant!",
         ];
 
         $validator = Validator::make($request->all(),[
-            'last_name' => ['required'],
-            'first_name' => ['required'],
-            'email' => ['required'],
-            'gender' => ['required'],
+            'name' => ['required'],
+            'manager' => ['required'],
+            // 'professor' => ['required'],
         ], $error_messages);
 
         if($validator->fails())
             return response()->json([
                 "status" => false,
                 "reload" => false,
-                "title" => "MIS A JOUR ERRONE",
+                "title" => "AJOUT ECHOUE",
                 "msg" => $validator->errors()->first()
             ]);
-        
-        $id = $request-> id;
 
-        $emailExist = User::where('email', $request-> email)->first();
-        
-        $search = User::find($id);
-        if($search){
-            if($emailExist){
-                $search -> update([
-                    'last_name' => $request-> last_name,
-                    'first_name' => $request-> first_name,
-                    'gender' => $request-> gender,
-                ]);
-                return response()->json([
-                    "status" => true,
-                    "reload" => true,
-                    // "redirect_to" => route('user'),
-                    "title" => "MIS A JOUR REUSSIE",
-                    "msg" => "Mis a jour reussie"
-                ]);
-            }
-            else{
-                $search -> update([
-                    'last_name' => $request-> last_name,
-                    'first_name' => $request-> first_name,
-                    'email' => $request-> email,
-                    'gender' => $request-> gender,
-                ]);
-                return response()->json([
-                    "status" => true,
-                    "reload" => true,
-                    // "redirect_to" => route('user'),
-                    "title" => "MIS A JOUR REUSSIE",
-                    "msg" => "Mis a jour reussie"
-                ]);
-            }
+        if($request->professor){
+            $professorId = implode(',', $request->professor);
+        }else{
+            $professorId = '';
         }
+
+        $id = $request-> id;
+        $search = Classroom::find($id);
+        $search -> update([
+            'name' => $request-> name,
+            'manager' => $request-> manager,
+            'professor' => $professorId,
+        ]);
+
+        return response()->json([
+            "status" => true,
+            "reload" => true,
+            // "redirect_to" => route('user'),
+            "title" => "Mis à jour réussie",
+            "msg" => "La classe au nom de ".$request-> name." a été mis à jour avec succès"
+        ]);
     }
 
     public function delete_user(Request $request)

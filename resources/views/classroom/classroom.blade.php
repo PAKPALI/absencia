@@ -23,6 +23,21 @@
 
             <div class="col-md-12">
 
+            <div class="modal fade" id="modal-view">
+                    <div class="modal-dialog modal-xl">
+                        <div class="modal-content">
+                            <div class="modal-header bg-primary">
+                                <h4 class="modal-title">DETAIL CLASSE</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div id="view_response">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="modal fade" id="modal-update">
                     <div class="modal-dialog modal-xl">
                         <div class="modal-content">
@@ -32,46 +47,8 @@
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
-                            <form id="updateUser">
-                                @csrf
-                                <div class="card-body">
-                                    <input type="hidden" name="id" class="form-control" id="userId">
-                                    <div class="row">
-                                        <div class="form-group col-6">
-                                            <label for="last_name">Nom</label>
-                                            <input type="text" name="last_name" class="form-control" id="last_name"
-                                                placeholder="Nom">
-                                        </div>
-                                        <div class="form-group col-6">
-                                            <label for="first_name">Prénom</label>
-                                            <input type="text" name="first_name" class="form-control" id="first_name"
-                                                placeholder="Prénom">
-                                        </div>
-                                        <div class="form-group col-6">
-                                            <label for="email">Email</label>
-                                            <input type="email" name="email" class="form-control" id="email"
-                                            placeholder="Email">
-                                        </div>
-                                        <div class="form-group col-6">
-                                            <label >Genre</label>
-                                            <select id="gender" name="gender" class="form-control">
-                                                <option value="">Sélectionnez le genre</option>
-                                                <option value="M">Masculin</option>
-                                                <option value="F">Feminin</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- loader -->
-                                <div id="update_loader" class="text-center">
-                                    <img class="animation__shake" src="{{asset('img/trimax.gif')}}" alt="TRIMAX_Logo"
-                                        height="70" width="70">
-                                </div>
-                                <div class="modal-footer justify-content-between">
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-warning">Modifier</button>
-                                </div>
-                            </form>
+                            <div id="edit_response">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -101,7 +78,7 @@
                                 </div>
                                 <div class="form-group col-12">
                                     <label>Professeurs</label>
-                                    <select name="professors" class="duallistbox" multiple="multiple">
+                                    <select name="professor[]" class="duallistbox" multiple="multiple">
                                         @foreach ($Professor as $p)
                                             <option value="{{$p->id}}">{{strtoupper($p->last_name)}} {{strtoupper($p->first_name)}}</option>
                                         @endforeach
@@ -157,14 +134,14 @@
         $('#update_loader').fadeOut();
         $('#add_loader').fadeOut();
 
-        var user_list = $('#class_list').DataTable({
+        var class_list = $('#class_list').DataTable({
             processing: true,
             serverSide: true,
             ajax: "{{ route('showListClassroom')}}",
             columns: [
                 {data: 'id',name: 'id'},
                 {data: 'name',name: 'name'},
-                {data: 'Manager',name: 'Manager'},
+                {data: 'manager',name: 'manager'},
                 // {data: 'created_at',name: 'created_at'},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ],
@@ -221,32 +198,44 @@
             return false;
         });
 
-        $('body').on('click', '.editUser', function () {
+        $('body').on('click', '.editUser', function (e) {
             $('#update_loader').fadeOut();
             var csrfToken = $('meta[name="csrf-token"]').attr('content');
             var id = $(this).data('id');
+            $('#edit_response').empty();
             $.ajax({
-                headers: {
-                    'X-CSRF-TOKEN': csrfToken
-                },
-                type: 'POST',
-                url: 'professor/getProfessorInfoById',
-                data: { id: id},
-                datatype: 'json',
-                success: function (data){
-                    console.log(data)
-                    if (data.status)
-                    {
-                        // $('#townName').val(data.townName);
-                        $('#userId').val(id);
-                        $('#last_name').val(data.last_name);
-                        $('#first_name').val(data.first_name);
-                        $('#email').val(data.email);
-                        $('#gender').val(data.gender);
-                    }
-                },
+                url:'classroom/edit/'+id,
+                dataType: 'html',
+                success:function(result)
+                {
+                    $('#edit_response').html(result);
+                }
             });
+            $('#modal-update').modal('show');
         });
+
+        $('body').on('click', '.viewUser', function (e) {
+            var csrfToken = $('meta[name="csrf-token"]').attr('content');
+            var id = $(this).data('id');
+            $('#view_response').empty();
+            $.ajax({
+                url:'classroom/view/'+id,
+                dataType: 'html',
+                success:function(result)
+                {
+                    $('#view_response').html(result);
+                }
+            });
+            $('#modal-view').modal('show');
+        });
+
+        $(document).on('click','.editUser',function(e){
+        var modalHeader = $("#modal-header-edit");
+        modalHeader.attr("class", "modal-header bg-success text-light");
+
+        e.preventDefault();
+        
+    });
 
         $('#updateUser').submit(function(){
             event.preventDefault();

@@ -39,6 +39,9 @@ class User extends Authenticatable
     public function school(){
         return  $this ->belongsTo(School::class,'school_id');
     }
+    public function fullName(){
+        return  strtoupper($this ->last_name).' '.$this ->first_name;
+    }
 
     /**
      * The attributes that should be hidden for serialization.

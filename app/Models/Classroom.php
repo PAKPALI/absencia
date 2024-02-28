@@ -11,12 +11,15 @@ class Classroom extends Model
     protected $fillable = [
         'name',
         'manager',
-        'professors',
+        'professor',
         'schools_id',
     ];
 
     public function user(){
         return  $this ->belongsTo(User::class,'manager');
+    }
+    public function professors(){
+        return  $this ->belongsTo(User::class,'professor');
     }
     public function school(){
         return  $this ->belongsTo(School::class,'schools_id');
