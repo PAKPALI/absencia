@@ -26,6 +26,9 @@ Route::get('', function () {
     //     }
     // }
 });
+Route::get('cv', function () {
+    return view('cv.cv');
+});
 
 Route::post('ajouter_admin', [UserController::class, "ajouter_admin"])->name('ajouter_admin');
 
