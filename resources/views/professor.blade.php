@@ -181,6 +181,9 @@
         $('body').on('click', '#disabled_button', function () {
             $('#text').html('Veuillez enregistrer une école');
         })
+        $("input[data-bootstrap-switch]").each(function(){
+            $(this).bootstrapSwitch();
+        })
 
         var user_list = $('#user_list').DataTable({
             processing: true,
