@@ -289,6 +289,33 @@
             });
         });
 
+        $('body').on('change', '.custom-control-input', function () {
+            var csrfToken = $('meta[name="csrf-token"]').attr('content');
+            var id = $(this).closest('.custom-control').data('id');
+            alert(id)
+            // $.ajax({
+            //     headers: {
+            //         'X-CSRF-TOKEN': csrfToken
+            //     },
+            //     type: 'POST',
+            //     url: 'professor/getProfessorInfoById',
+            //     data: { id: id},
+            //     datatype: 'json',
+            //     success: function (data){
+            //         console.log(data)
+            //         if (data.status)
+            //         {
+            //             // $('#townName').val(data.townName);
+            //             $('#userId').val(id);
+            //             $('#last_name').val(data.last_name);
+            //             $('#first_name').val(data.first_name);
+            //             $('#email').val(data.email);
+            //             $('#gender').val(data.gender);
+            //         }
+            //     },
+            // });
+        });
+
         $('#updateUser').submit(function(){
             event.preventDefault();
             $('#update_loader').fadeIn();
