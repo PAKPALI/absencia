@@ -84,11 +84,14 @@ Route::prefix('professor')->middleware(['auth'])->controller(ProfessorController
     // Get
     Route::get('', 'professor')->name('professor');
     Route::get('showListProfessor', 'showListProfessor')->name('showListProfessor');
+    Route::get('/classroomManager/{id}', 'classroomManager')->name('classroomManager');
+    Route::get('/classroomProfessor/{id}', 'classroomProfessor')->name('classroomProfessor');
 
     //post
     Route::post('getProfessorInfoById', 'getProfessorInfoById');
     Route::post('add', "add");
     Route::post('update', 'update');
+    Route::post('connected', 'connected');
     Route::post('delete', 'delete');
 });
 

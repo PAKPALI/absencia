@@ -36,12 +36,19 @@ class ProfessorController extends Controller
                 //     return $Users->created_at->translatedFormat('d M Y');
                 // })
                 ->addColumn('action', function($row){
-                    $btn = '<a href="javascript:void(0)" data-toggle="modal" data-target="#modal-update"  data-id="'.$row->id.'" data-original-title="Edit" class="btn btn-warning btn-sm editUser">Mod</a>';
-                    $btn = $btn.' <a href="javascript:void(0)" data-id="'.$row->id.'" data-original-title="Delete" class="btn btn-danger mr-4 btn-sm deleteUser">Sup</a>';
-                    $btn = $btn.'<div  class="custom-control checkbox custom-switch custom-switch-off-danger custom-switch-on-success">
-                    <input data-id="'.$row->id.'" type="checkbox" class="custom-control-input" id="checkbox">
-                    <label class="custom-control-label" for="checkbox"></label>
-                    </div>';
+                    $btn = '<a href="javascript:void(0)" data-toggle="modal" data-target="#modal-update"  data-id="'.$row->id.'" data-original-title="Edit" class="btn btn-warning btn-sm editUser">Modifier</a>';
+                    // $btn = $btn.' <a href="javascript:void(0)" data-id="'.$row->id.'" data-original-title="Delete" class="btn btn-danger mr-4 btn-sm deleteUser">Sup</a>';
+                    // if($row->connected){
+                    //     $btn = $btn.'<div data-id="'.$row->id.'" class="custom-control checkbox custom-switch custom-switch-off-danger custom-switch-on-success">
+                    //                     <input type="checkbox" class="custom-control-input" id="checkbox_'.$row->id.'" checked>
+                    //                     <label class="custom-control-label" for="checkbox_'.$row->id.'"></label>
+                    //                 </div>';
+                    // }else{
+                    //     $btn = $btn.'<div data-id="'.$row->id.'" class="custom-control checkbox custom-switch custom-switch-off-danger custom-switch-on-success">
+                    //                     <input type="checkbox" class="custom-control-input" id="checkbox_'.$row->id.'">
+                    //                     <label class="custom-control-label" for="checkbox_'.$row->id.'"></label>
+                    //                 </div>';
+                    // }
                     return $btn;
                 })
                 ->rawColumns(['action'])
@@ -175,53 +182,47 @@ class ProfessorController extends Controller
         }
     }
 
-    public function delete_user(Request $request)
+    public function connected(Request $request)
     {
-        $error_messages = [
-            "id.required" => "Remplir le champ id!",
-            "id.numeric" => "Remplir le champ id avec les chiffres!",
-        ];
-
-        $validator = Validator::make($request->all(),[
-            'id' => 'required| numeric'
-        ], $error_messages);
-
-        if($validator->fails())
-            return response()->json([
-                "status" => false,
-                "reload" => false,
-                "title" => "SUPPRESSION",
-                "msg" => $validator->errors()->first()
-            ]);
-        
         $id = $request-> id;
+        $connected = $request-> connected;
+        
         $search = User::find($id);
         if($search){
-            $search -> delete();
-            if($search->school_id){
-                return response()->json([
-                    "status" => false,
-                    "reload" => true,
-                    // "redirect_to" => route('user'),
-                    "title" => "SUPPRESSION ECHOUEE",
-                    "msg" => "l'utilisateur ".$search->name." est lié a une école"
+            if($connected == 0){
+                $search -> update([
+                    'connected' => false,
                 ]);
-            }else{
                 return response()->json([
                     "status" => true,
                     "reload" => true,
-                    // "redirect_to" => route('user'),
-                    "title" => "SUPPRESSION",
-                    "msg" => "suppression reussie"
+                    "redirect_to" => route('user'),
+                    "title" => "CONNEXION DESACTIVEE",
+                    "msg" => "Désactivation réussie pour ".$search->fullName()
+                ]);
+            }else{
+                $search -> update([
+                    'connected' => true,
+                ]);
+                return response()->json([
+                    "status" => true,
+                    "reload" => true,
+                    "redirect_to" => route('user'),
+                    "title" => "CONNEXION ACTIVEE",
+                    "msg" => "Activation réussie pour ".$search->fullName()
                 ]);
             }
-        }else{
-            return response()->json([
-                "status" => false,
-                "reload" => true,
-                "title" => "SUPPRESSION",
-                "msg" => "Utilisateur inexistant"
-            ]);
         }
     }
+
+    public function classroomManager($id)
+    {
+        $decryptedId = decrypt($id);
+    }
+
+    public function classroomProfessor($id)
+    {
+        $decryptedId = decrypt($id);
+    }
+
 }

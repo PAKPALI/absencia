@@ -44,7 +44,7 @@ class SchoolController extends Controller
                 //     return $Users->created_at->translatedFormat('d M Y');
                 // })
                 ->addColumn('action', function($row){
-                    $btn = '<a href="javascript:void(0)" data-toggle="modal" data-target="#modal-update"  data-id="'.$row->id.'" data-original-title="Edit" class="btn btn-warning btn-sm editSchool">Mod</a>';
+                    $btn = '<a href="javascript:void(0)" data-toggle="modal" data-target="#modal-update"  data-id="'.$row->id.'" data-original-title="Edit" class="btn btn-warning btn-sm editSchool">Modifier</a>';
                     // $btn = $btn.' <a href="javascript:void(0)" data-id="'.$row->id.'" data-original-title="Delete" class="btn btn-danger btn-sm deleteUser">Sup</a>';
                     return $btn;
                 })

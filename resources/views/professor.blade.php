@@ -151,9 +151,9 @@
                                     <th>N°</th>
                                     <th>Nom</th>
                                     <th>Prénom</th>
-                                    <th>Email</th>
+                                    <!-- <th>Email</th> -->
                                     <th>Genre</th>
-                                    <th>Ecole</th>
+                                    <!-- <th>Ecole</th> -->
                                     <th>Statut</th>
                                     <th>Action</th>
                                 </tr>
@@ -193,9 +193,9 @@
                 {data: 'id',name: 'id'},
                 {data: 'last_name',name: 'last_name'},
                 {data: 'first_name',name: 'first_name'},
-                {data: 'email',name: 'email'},
+                // {data: 'email',name: 'email'},
                 {data: 'gender',name: 'gender'},
-                {data: 'school_id',name: 'school_id'},
+                // {data: 'school_id',name: 'school_id'},
                 {data: 'connected',name: 'connected'},
                 // {data: 'created_at',name: 'created_at'},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
@@ -209,10 +209,18 @@
                 var status ='';
                 if (data.connected) {
                     status +=`<span class='badge bg-success'>Actif</span>`;
+                    status +=`<div data-id="${data.id}" class="custom-control checkbox custom-switch custom-switch-off-danger custom-switch-on-success">
+                                        <input type="checkbox" class="custom-control-input" id="checkbox_'${data.id}'" checked>
+                                        <label class="custom-control-label" for="checkbox_'${data.id}'"></label>
+                                    </div>`;
                 }else{
-                    status +=`<span class='badge bg-danger'>Désactif</span>`;
+                    status +=`<span class='badge bg-danger'>Inactif</span>`;
+                    status +=`<div data-id="${data.id}" class="custom-control checkbox custom-switch custom-switch-off-danger custom-switch-on-success">
+                                        <input type="checkbox" class="custom-control-input" id="checkbox_'${data.id}'">
+                                        <label class="custom-control-label" for="checkbox_'${data.id}'"></label>
+                                    </div>`;
                 }
-                $('td:eq(6)', row).html(status);
+                $('td:eq(4)', row).html(status);
             },
         });
 
@@ -291,29 +299,108 @@
 
         $('body').on('change', '.custom-control-input', function () {
             var csrfToken = $('meta[name="csrf-token"]').attr('content');
-            var id = $(this).closest('.custom-control').data('id');
-            alert(id)
-            // $.ajax({
-            //     headers: {
-            //         'X-CSRF-TOKEN': csrfToken
-            //     },
-            //     type: 'POST',
-            //     url: 'professor/getProfessorInfoById',
-            //     data: { id: id},
-            //     datatype: 'json',
-            //     success: function (data){
-            //         console.log(data)
-            //         if (data.status)
-            //         {
-            //             // $('#townName').val(data.townName);
-            //             $('#userId').val(id);
-            //             $('#last_name').val(data.last_name);
-            //             $('#first_name').val(data.first_name);
-            //             $('#email').val(data.email);
-            //             $('#gender').val(data.gender);
-            //         }
-            //     },
-            // });
+            var Id = $(this).closest('.custom-control').data('id');
+            var isChecked = $(this).prop('checked');
+            // alert(isChecked)
+            if(isChecked){
+                var dataToSend = {
+                    connected: 1,
+                    id: Id
+                };
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Récupère automatiquement le token CSRF depuis la balise meta
+                    },
+                    type: 'POST',
+                    url: 'professor/connected',
+                    //enctype: 'multipart/form-data',
+                    data: dataToSend,
+                    datatype: 'json',
+                    success: function(data) {
+                        //var object = JSON.parse(data);
+                        console.log(data)
+                        if (data.status) {
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                icon: "success",
+                                title: data.title,
+                                text: data.msg,
+                                timer: 3000
+                            })
+                            user_list.draw();
+                        } else {
+                            Swal.fire({
+                                title: data.title,
+                                text: data.msg,
+                                icon: 'error',
+                                confirmButtonText: "D'accord",
+                                confirmButtonColor: '#A40000',
+                            })
+                        }
+                    },
+                    error: function(data) {
+                        console.log(data)
+                        Swal.fire({
+                            icon: "error",
+                            title: "erreur",
+                            text: "Impossible de communiquer avec le serveur.",
+                            timer: 3600,
+                        })
+                    }
+                });
+                return false;
+            }else{
+                var dataToSend = {
+                    connected: 0,
+                    id: Id
+                };
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Récupère automatiquement le token CSRF depuis la balise meta
+                    },
+                    type: 'POST',
+                    url: 'professor/connected',
+                    //enctype: 'multipart/form-data',
+                    data: dataToSend,
+                    datatype: 'json',
+                    success: function(data) {
+                        //var object = JSON.parse(data);
+                        console.log(data)
+                        if (data.status) {
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                icon: "success",
+                                title: data.title,
+                                text: data.msg,
+                                timer: 3000
+                            })
+                            user_list.draw();
+                        } else {
+                            Swal.fire({
+                                title: data.title,
+                                text: data.msg,
+                                icon: 'error',
+                                confirmButtonText: "D'accord",
+                                confirmButtonColor: '#A40000',
+                            })
+                        }
+                    },
+                    error: function(data) {
+                        console.log(data)
+                        Swal.fire({
+                            icon: "error",
+                            title: "erreur",
+                            text: "Impossible de communiquer avec le serveur.",
+                            timer: 3600,
+                        })
+                    }
+                });
+                return false;
+            }
         });
 
         $('#updateUser').submit(function(){

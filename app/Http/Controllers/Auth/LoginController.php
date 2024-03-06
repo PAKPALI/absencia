@@ -74,9 +74,9 @@ class LoginController extends Controller
                         "status" => true,
                         "reload" => true,
                         "redirect_to" => route('tableau'),
-                        "title" => "CONNEXION REUSSI",
+                        "title" => "CONNEXION REUSSIE",
                         'check' => Auth::check(),
-                        "msg" => "connexion reussie."
+                        "msg" => "connexion réussie."
                     ]);
                 }elseif($user->user_type == 2){
                     if($user->connected){
@@ -87,7 +87,7 @@ class LoginController extends Controller
                             "redirect_to" => route('tableau'),
                             "title" => "CONNEXION REUSSI",
                             'check' => Auth::check(),
-                            "msg" => "connexion reussie."
+                            "msg" => "connexion réussie."
                         ]);
                     }else{
                         return response()->json([
@@ -101,15 +101,13 @@ class LoginController extends Controller
                 }else{
                     if($user->connected){
                         Auth::login($user);
-                        // $request->session()->regenerate();           
-    
                         return response()->json([
                             "status" => true,
                             "reload" => true,
                             "redirect_to" => route('tableau'),
-                            "title" => "CONNEXION REUSSI",
+                            "title" => "CONNEXION REUSSIE",
                             'check' => Auth::check(),
-                            "msg" => "connexion reussie."
+                            "msg" => "connexion réussie"
                         ]);
                     }else{
                         return response()->json([

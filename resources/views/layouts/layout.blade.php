@@ -69,7 +69,8 @@
             @include('partials.menu')
         @elseif(Auth::user()->user_type ==2)
             @include('partials.menuAdmin')
-        @else  
+        @else
+            @include('partials.menuProf')
         @endif
 
         <!-- Content Wrapper. Contains page content -->
