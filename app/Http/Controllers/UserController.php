@@ -46,7 +46,6 @@ class UserController extends Controller
                 ->rawColumns(['action'])
                 ->make(true);
         }
-        return view('admin.town');
     }
 
     public function add_user(Request $request)

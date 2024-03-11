@@ -97,7 +97,7 @@
                     <form id="add">
                         @csrf
                         <div class="card-body">
-                            <input type="hidden" name="classroom_id" value="{{$Classroom->id}}" class="form-control" id="userId">
+                            <input type="hidden" name="classroom_id" value="{{$Classroom->id}}" class="form-control" id="classroom_id">
                             <div class="row">
                                 <div class="form-group col-6">
                                     <label for="last_name">Nom</label>
@@ -121,12 +121,12 @@
                                 </div>
                                 <div class="form-group col-6">
                                     <label for="num1">Numero 1</label>
-                                    <input type="email" name="num1" class="form-control" id="num1"
+                                    <input type="number" name="num1" class="form-control" id="num1"
                                         placeholder="Numero 1">
                                 </div>
                                 <div class="form-group col-6">
                                     <label for="num2">Numero 2</label>
-                                    <input type="email" name="num2" class="form-control" id="num2"
+                                    <input type="number" name="num2" class="form-control" id="num2"
                                         placeholder="Numero 2">
                                 </div>
                                 <div class="form-group col-12">
@@ -187,6 +187,10 @@
         $("input[data-bootstrap-switch]").each(function(){
             $(this).bootstrapSwitch();
         })
+        // var classroom_id = $('#classroom_id').val();
+        // var ajaxUrl = "{{ route('showListStudent', ['classroom_id' => ':classroom_id']) }}";
+        // ajaxUrl = ajaxUrl.replace(':classroom_id', classroom_id);
+        // alert(ajaxUrl)
 
         var user_list = $('#user_list').DataTable({
             processing: true,

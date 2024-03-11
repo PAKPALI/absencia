@@ -9,6 +9,7 @@ use App\Http\Controllers\BanqueController;
 use App\Http\Controllers\CaisseController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\SchoolController;
+use App\Http\Controllers\StudentController;
 use App\Http\Controllers\ClassroomController;
 use App\Http\Controllers\ProfessorController;
 use App\Http\Controllers\SousCaisseController;
@@ -84,14 +85,14 @@ Route::prefix('professor')->middleware(['auth'])->controller(ProfessorController
     // Get
     Route::get('', 'professor')->name('professor');
     Route::get('showListProfessor', 'showListProfessor')->name('showListProfessor');
-    Route::get('showListStudent', 'showListStudent')->name('showListStudent');
+    // Route::get('showListStudent', 'showListStudent')->name('showListStudent');
     Route::get('/classroomManager/{id}', 'classroomManager')->name('classroomManager');
     Route::get('/classroomProfessor/{id}', 'classroomProfessor')->name('classroomProfessor');
 
     //post
     Route::post('getProfessorInfoById', 'getProfessorInfoById');
     Route::post('add', "add");
-    Route::post('add/student', "addStudent")->name('addS');
+    // Route::post('add/student', "addStudent")->name('addS');
     Route::post('update', 'update');
     Route::post('connected', 'connected');
     Route::post('delete', 'delete');
@@ -108,6 +109,16 @@ Route::prefix('classroom')->middleware(['auth'])->controller(ClassroomController
     //post
     Route::post('getClassroomInfoById', 'getClassroomInfoById');
     Route::post('add', "add");
+    Route::post('update', 'update');
+    Route::post('delete', 'delete');
+});
+
+// manage student
+Route::prefix('student')->middleware(['auth'])->controller(StudentController::class)->group(function () {
+    // Get
+    Route::get('showListStudent', 'showListStudent')->name('showListStudent');
+    //post
+    Route::post('add/student', "addStudent")->name('addS');
     Route::post('update', 'update');
     Route::post('delete', 'delete');
 });
