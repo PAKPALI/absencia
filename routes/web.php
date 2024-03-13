@@ -116,11 +116,12 @@ Route::prefix('classroom')->middleware(['auth'])->controller(ClassroomController
 // manage student
 Route::prefix('student')->middleware(['auth'])->controller(StudentController::class)->group(function () {
     // Get
-    Route::get('showListStudent', 'showListStudent')->name('showListStudent');
+    Route::get('showListStudent/{classroom_id}', 'showListStudent')->name('showListStudent');
+
     //post
-    Route::post('add/student', "addStudent")->name('addS');
-    Route::post('update', 'update');
-    Route::post('delete', 'delete');
+    Route::post('getStudentInfoById', 'getStudentInfoById')->name('getStudentInfoById');
+    Route::post('add/student', "addStudent")->name('addStudent');
+    Route::post('update', 'update')->name('updateStudent');
 });
 
 Route::post('outUser', [UserController::class, 'outUser'])->name('outUser');

@@ -30,10 +30,10 @@
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
-                            <form id="updateUser">
+                            <form id="updateStudent">
                                 @csrf
                                 <div class="card-body">
-                                    <input type="hidden" name="id" class="form-control" id="userId">
+                                    <input type="hidden" name="id" class="form-control" id="studentId">
                                     <div class="row">
                                         <div class="form-group col-6">
                                             <label for="last_name">Nom</label>
@@ -56,14 +56,14 @@
                                                 placeholder="Email">
                                         </div>
                                         <div class="form-group col-6">
-                                            <label for="num1">Numero 1</label>
-                                            <input type="email" name="num1" class="form-control" id="num1"
-                                                placeholder="Email">
+                                            <label for="num1">Numéro 1</label>
+                                            <input type="number" name="num1" class="form-control" id="num1"
+                                                placeholder="Numero 1">
                                         </div>
                                         <div class="form-group col-6">
-                                            <label for="num2">Numero 2</label>
-                                            <input type="email" name="num2" class="form-control" id="num2"
-                                                placeholder="Email">
+                                            <label for="num2">Numéro 2</label>
+                                            <input type="number" name="num2" class="form-control" id="num2"
+                                                placeholder="Numero 2">
                                         </div>
                                         <div class="form-group col-6">
                                             <label >Genre</label>
@@ -89,6 +89,7 @@
                     </div>
                 </div>
 
+                @if($Manager==1)
                 <div class="card card-primary">
                     <div class="card-header">
                         <h3 class="card-title"><small>Ajouter les étudiants</small></h3>
@@ -144,6 +145,7 @@
                         </div>
                     </form>
                 </div>
+                @endif
 
                 <div class="card mt-5">
                     <div class="card-header bg-primary">
@@ -187,15 +189,14 @@
         $("input[data-bootstrap-switch]").each(function(){
             $(this).bootstrapSwitch();
         })
-        // var classroom_id = $('#classroom_id').val();
-        // var ajaxUrl = "{{ route('showListStudent', ['classroom_id' => ':classroom_id']) }}";
-        // ajaxUrl = ajaxUrl.replace(':classroom_id', classroom_id);
-        // alert(ajaxUrl)
+        var classroomId = $('#classroom_id').val();
+        var ajaxUrl = "{{ route('showListStudent', ['classroom_id' => ':classroom_id']) }}";
+        ajaxUrl = ajaxUrl.replace(':classroom_id', classroomId);
 
         var user_list = $('#user_list').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route('showListStudent')}}",
+            ajax: ajaxUrl,
             columns: [
                 {data: 'id',name: 'id'},
                 {data: 'last_name',name: 'last_name'},
@@ -220,8 +221,7 @@
             $('#add_loader').fadeIn();
             $.ajax({
                 type: 'POST',
-                // url: 'professor/add/student',
-                url: '{{ route('addS') }}',
+                url: "{{route('addStudent')}}",
                 //enctype: 'multipart/form-data',
                 data: $('#add').serialize(),
                 datatype: 'json',
@@ -261,7 +261,7 @@
             return false;
         });
 
-        $('body').on('click', '.editUser', function () {
+        $('body').on('click', '.editStudent', function () {
             $('#update_loader').fadeOut();
             var csrfToken = $('meta[name="csrf-token"]').attr('content');
             var id = $(this).data('id');
@@ -270,7 +270,7 @@
                     'X-CSRF-TOKEN': csrfToken
                 },
                 type: 'POST',
-                url: 'professor/getProfessorInfoById',
+                url: "{{route('getStudentInfoById')}}",
                 data: { id: id},
                 datatype: 'json',
                 success: function (data){
@@ -278,10 +278,13 @@
                     if (data.status)
                     {
                         // $('#townName').val(data.townName);
-                        $('#userId').val(id);
+                        $('#studentId').val(id);
                         $('#last_name').val(data.last_name);
                         $('#first_name').val(data.first_name);
-                        $('#email').val(data.email);
+                        $('#email1').val(data.email1);
+                        $('#email2').val(data.email2);
+                        $('#num1').val(data.num1);
+                        $('#num2').val(data.num2);
                         $('#gender').val(data.gender);
                     }
                 },
@@ -394,14 +397,14 @@
             }
         });
 
-        $('#updateUser').submit(function(){
+        $('#updateStudent').submit(function(){
             event.preventDefault();
             $('#update_loader').fadeIn();
             $.ajax({
                 type: 'POST',
-                url: 'professor/update',
+                url: "{{route('updateStudent')}}",
                 //enctype: 'multipart/form-data',
-                data: $('#updateUser').serialize(),
+                data: $('#updateStudent').serialize(),
                 datatype: 'json',
                 success: function (data){
                     console.log(data)

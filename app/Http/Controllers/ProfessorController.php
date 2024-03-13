@@ -57,22 +57,24 @@ class ProfessorController extends Controller
                 ->make(true);
         }
     }
-    public function showListStudent(Request $request)
-    {
-        // composer require yajra/laravel-datatables-oracle
-        if(request()->ajax()){
-            $Student = Student::all();
-            return DataTables::of($Student)
-                ->addIndexColumn()
-                ->addColumn('action', function($row){
-                    $btn = '<a href="javascript:void(0)" data-toggle="modal" data-target="#modal-update"  data-id="'.$row->id.'" data-original-title="Edit" class="btn btn-warning btn-sm editUser">Modifier</a>';
-                    return $btn;
-                })
-                ->rawColumns(['action'])
-                ->make(true);
-        }
-    }
-
+    // public function showListStudent()
+    // {
+    //     // composer require yajra/laravel-datatables-oracle
+    //     if(request()->ajax()){
+    //         $Classroom = Classroom::where('manager', Auth::user()->id);
+    //         // $Student = Student::where('classrooms_id', $Classroom->id);
+    //         $Student = Student::all();
+    //         return DataTables::of($Student)
+    //             ->addIndexColumn()
+    //             ->addColumn('action', function($row){
+    //                 $btn = '<a href="javascript:void(0)" data-toggle="modal" data-target="#modal-update"  data-id="'.$row->id.'" data-original-title="Edit" class="btn btn-warning btn-sm editUser">Modifier</a>';
+    //                 return $btn;
+    //             })
+    //             ->rawColumns(['action'])
+    //             ->make(true);
+    //     }
+    // }
+    
     public function add(Request $request)
     {
         $error_messages = [
@@ -238,12 +240,18 @@ class ProfessorController extends Controller
         $Classroom = Classroom::find($decryptedId['id']);
         return view('student',[
             'Classroom' => $Classroom,
+            'Manager' => 1,
         ]);
     }
 
     public function classroomProfessor($id)
     {
         $decryptedId = decrypt($id);
+        $Classroom = Classroom::find($decryptedId['id']);
+        return view('student',[
+            'Classroom' => $Classroom,
+            'Manager' => 0,
+        ]);
     }
 
 }
