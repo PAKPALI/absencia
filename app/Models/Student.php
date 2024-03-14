@@ -18,4 +18,8 @@ class Student extends Model
         'num2',
         'gender',
     ];
+
+    public function fullName(){
+        return  strtoupper($this ->last_name).' '.$this ->first_name;
+    }
 }

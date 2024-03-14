@@ -147,6 +147,12 @@
                 </div>
                 @endif
 
+                <div id="card-mail" class="card card-dark">
+                    <div class="card-header">
+                        <h3 class="card-title">ENVOIE DE MAIL EN COURS...</h3>
+                    </div>
+                </div>
+
                 <div class="card mt-5">
                     <div class="card-header bg-primary">
                         <h2 class="card-title">LISTE DES ETUDIANTS</h2>
@@ -179,6 +185,7 @@
     $('#loader').hide();
     $('#update_loader').fadeOut();
     $('#add_loader').fadeOut();
+    $('#card-mail').hide();
     $(function() {
         $('#loader').hide();
         $('#loader2').hide();
@@ -281,7 +288,7 @@
                         $('#studentId').val(id);
                         $('#last_name').val(data.last_name);
                         $('#first_name').val(data.first_name);
-                        $('#email1').val(data.email1);
+                        $('#email').val(data.email1);
                         $('#email2').val(data.email2);
                         $('#num1').val(data.num1);
                         $('#num2').val(data.num2);
@@ -443,53 +450,54 @@
             return false;
         });
 
-        $('body').on('click', '.deleteUser', function () {
-				var csrfToken = $('meta[name="csrf-token"]').attr('content');
-				var id = $(this).data("id");
-				
-				Swal.fire({
-					icon: "question",
-					title: "Etes vous sur de vouloir supprimer cet utilisateur?",
-					// text: " Les éléments liés a la ville seront supprimés ; la confirmation est irréversible",
-					confirmButtonText: "Oui",
-					confirmButtonColor: 'red',
-					showCancelButton: true,
-					cancelButtonText: "Non",
-					cancelButtonColor: 'blue',
-				}).then((result) => {
-					if (result.isConfirmed){
-						$.ajax({
-							headers: {
-								'X-CSRF-TOKEN': csrfToken
-							},
-							type: "post",
-							url: "utilisateurs/delete_user",
-							data: {id: id},
-							datatype: 'json',
-							success: function (data) {
-								if(data.status){
-                                    Swal.fire({
-                                        icon: "success",
-                                        title: data.title,
-                                        text: data.msg,
-								    }).then(() => {
-									    user_list.draw();
-								    })
-                                }else{
-                                    Swal.fire({
-                                        icon: "error",
-                                        title: data.title,
-                                        text: data.msg,
-								    })
-                                }
-							},
-							error: function (data) {
-								console.log('Error:', data);
-							}
-						});
-					}
-				})
-			});
+        $('body').on('click', '.absent', function () {
+            var csrfToken = $('meta[name="csrf-token"]').attr('content');
+            var id = $(this).data("id");
+            var name = $(this).data("name");
+            
+            Swal.fire({
+                icon: "question",
+                title: "L'élève "+name+" Est il absent?",
+                // text: " Les éléments liés a la ville seront supprimés ; la confirmation est irréversible",
+                confirmButtonText: "Oui",
+                confirmButtonColor: 'black',
+                showCancelButton: true,
+                cancelButtonText: "Non",
+                cancelButtonColor: 'blue',
+            }).then((result) => {
+                if (result.isConfirmed){
+                    $('#card-mail').fadeIn();
+                    $.ajax({
+                        headers: {'X-CSRF-TOKEN': csrfToken},
+                        type: "post",
+                        url: "{{route('Absent')}}",
+                        data: {id: id},
+                        datatype: 'json',
+                        success: function (data) {
+                            if(data.status){
+                                Swal.fire({
+                                    icon: "success",
+                                    title: data.title,
+                                    text: data.msg,
+                                }).then(() => {
+                                    // user_list.draw();
+                                })
+                            }else{
+                                Swal.fire({
+                                    icon: "error",
+                                    title: data.title,
+                                    text: data.msg,
+                                })
+                            }
+                        },
+                        error: function (data) {
+                            console.log('Error:', data);
+                        }
+                    });
+                    $('#card-mail').fadeOut(5000);
+                }
+            })
+        });
     });
 </script>
 

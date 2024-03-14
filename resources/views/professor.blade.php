@@ -53,6 +53,11 @@
                                             placeholder="Email">
                                         </div>
                                         <div class="form-group col-6">
+                                            <label for="subject">Matière</label>
+                                            <input type="text" name="subject" class="form-control" id="subject"
+                                                placeholder="Matière">
+                                        </div>
+                                        <div class="form-group col-12">
                                             <label >Genre</label>
                                             <select id="gender" name="gender" class="form-control">
                                                 <option value="">Sélectionnez le genre</option>
@@ -101,12 +106,9 @@
                                     placeholder="Email">
                                 </div>
                                 <div class="form-group col-4">
-                                    <label >Genre</label>
-                                    <select name="gender" class="form-control">
-                                        <option value="">Sélectionnez le genre</option>
-                                        <option value="M">Masculin</option>
-                                        <option value="F">Feminin</option>
-                                    </select>
+                                    <label for="subject">Matière</label>
+                                    <input type="text" name="subject" class="form-control" id="subject"
+                                        placeholder="Matière">
                                 </div>
                                 <div class="form-group col-4">
                                     <label for="exampleInputText5">Mot de passe</label>
@@ -117,6 +119,14 @@
                                     <label for="exampleInputText6">Confirmer mot de passe</label>
                                     <input type="password" name="password_confirmation" class="form-control" id="exampleInputText6"
                                         placeholder="Confirmez mot de passe">
+                                </div>
+                                <div class="form-group col-12">
+                                    <label >Genre</label>
+                                    <select name="gender" class="form-control">
+                                        <option value="">Sélectionnez le genre</option>
+                                        <option value="M">Masculin</option>
+                                        <option value="F">Feminin</option>
+                                    </select>
                                 </div>
                             </div>
                             
@@ -151,7 +161,7 @@
                                     <th>N°</th>
                                     <th>Nom</th>
                                     <th>Prénom</th>
-                                    <!-- <th>Email</th> -->
+                                    <th>Matière</th>
                                     <th>Genre</th>
                                     <!-- <th>Ecole</th> -->
                                     <th>Statut</th>
@@ -193,14 +203,13 @@
                 {data: 'id',name: 'id'},
                 {data: 'last_name',name: 'last_name'},
                 {data: 'first_name',name: 'first_name'},
-                // {data: 'email',name: 'email'},
+                {data: 'subject',name: 'subject'},
                 {data: 'gender',name: 'gender'},
                 // {data: 'school_id',name: 'school_id'},
                 {data: 'connected',name: 'connected'},
                 // {data: 'created_at',name: 'created_at'},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ],
-
             drawCallback: function() {
                 $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
                 $('#user_list').css('width','100%');
@@ -220,7 +229,7 @@
                                         <label class="custom-control-label" for="checkbox_'${data.id}'"></label>
                                     </div>`;
                 }
-                $('td:eq(4)', row).html(status);
+                $('td:eq(5)', row).html(status);
             },
         });
 
@@ -243,6 +252,7 @@
                             title: data.title,
                             text: data.msg,
                         }).then(() => {
+                            $('#add').trigger("reset");
                             user_list.draw();
                         })
                     } else {
@@ -292,6 +302,7 @@
                         $('#first_name').val(data.first_name);
                         $('#email').val(data.email);
                         $('#gender').val(data.gender);
+                        $('#subject').val(data.subject);
                     }
                 },
             });
@@ -450,52 +461,52 @@
         });
 
         $('body').on('click', '.deleteUser', function () {
-				var csrfToken = $('meta[name="csrf-token"]').attr('content');
-				var id = $(this).data("id");
-				
-				Swal.fire({
-					icon: "question",
-					title: "Etes vous sur de vouloir supprimer cet utilisateur?",
-					// text: " Les éléments liés a la ville seront supprimés ; la confirmation est irréversible",
-					confirmButtonText: "Oui",
-					confirmButtonColor: 'red',
-					showCancelButton: true,
-					cancelButtonText: "Non",
-					cancelButtonColor: 'blue',
-				}).then((result) => {
-					if (result.isConfirmed){
-						$.ajax({
-							headers: {
-								'X-CSRF-TOKEN': csrfToken
-							},
-							type: "post",
-							url: "utilisateurs/delete_user",
-							data: {id: id},
-							datatype: 'json',
-							success: function (data) {
-								if(data.status){
-                                    Swal.fire({
-                                        icon: "success",
-                                        title: data.title,
-                                        text: data.msg,
-								    }).then(() => {
-									    user_list.draw();
-								    })
-                                }else{
-                                    Swal.fire({
-                                        icon: "error",
-                                        title: data.title,
-                                        text: data.msg,
-								    })
-                                }
-							},
-							error: function (data) {
-								console.log('Error:', data);
-							}
-						});
-					}
-				})
-			});
+            var csrfToken = $('meta[name="csrf-token"]').attr('content');
+            var id = $(this).data("id");
+            
+            Swal.fire({
+                icon: "question",
+                title: "Etes vous sur de vouloir supprimer cet utilisateur?",
+                // text: " Les éléments liés a la ville seront supprimés ; la confirmation est irréversible",
+                confirmButtonText: "Oui",
+                confirmButtonColor: 'red',
+                showCancelButton: true,
+                cancelButtonText: "Non",
+                cancelButtonColor: 'blue',
+            }).then((result) => {
+                if (result.isConfirmed){
+                    $.ajax({
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken
+                        },
+                        type: "post",
+                        url: "utilisateurs/delete_user",
+                        data: {id: id},
+                        datatype: 'json',
+                        success: function (data) {
+                            if(data.status){
+                                Swal.fire({
+                                    icon: "success",
+                                    title: data.title,
+                                    text: data.msg,
+                                }).then(() => {
+                                    user_list.draw();
+                                })
+                            }else{
+                                Swal.fire({
+                                    icon: "error",
+                                    title: data.title,
+                                    text: data.msg,
+                                })
+                            }
+                        },
+                        error: function (data) {
+                            console.log('Error:', data);
+                        }
+                    });
+                }
+            })
+        });
     });
 </script>
 

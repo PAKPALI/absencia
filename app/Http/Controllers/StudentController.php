@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class StudentController extends Controller
@@ -21,7 +22,8 @@ class StudentController extends Controller
             return DataTables::of($Student)
                 ->addIndexColumn()
                 ->addColumn('action', function($row){
-                    $btn = '<a href="javascript:void(0)" data-toggle="modal" data-target="#modal-update"  data-id="'.$row->id.'" data-original-title="Edit" class="btn btn-warning btn-sm editStudent">Modifier</a>';
+                    $btn = '<a href="javascript:void(0)" data-toggle="modal" data-target="#modal-update"  data-id="'.$row->id.'" data-original-title="Edit" class="btn btn-warning btn-sm editStudent">Modifier</a>'.
+                    $btn = ' <a  data-id="'.$row->id.'" data-name="'.$row->fullName().'" data-original-title="Edit" class="btn btn-dark btn-sm absent">A?</a>';
                     return $btn;
                 })
                 ->rawColumns(['action'])
@@ -38,7 +40,7 @@ class StudentController extends Controller
             "status" => true,
             "last_name" => $User->last_name,
             "first_name" => $User->first_name,
-            "email1" => $User->email1,
+            "email1" => $User->email,
             "email2" => $User->email2,
             "num1" => $User->num1,
             "num2" => $User->num2,
@@ -150,4 +152,42 @@ class StudentController extends Controller
             ]);
         }
     }
+
+    public function absent(Request $request)
+    {
+        $id = $request-> id;
+        $search = Student::find($id);
+        if($search->email OR $search->email2){
+            $this->sendEmail($search->email,$search->email2,$search->fullName());
+            return response()->json([
+                "status" => true,
+                "reload" => true,
+                // "redirect_to" => route('user'),
+                "title" => "ENREGISTREMENT REUSSIE",
+                "msg" => "Email envoyé aux parents avec succès"
+            ]);
+        }else{
+            return response()->json([
+                "status" => true,
+                "reload" => true,
+                // "redirect_to" => route('user'),
+                "title" => "ENREGISTREMENT REUSSIE",
+                "msg" => "Email non envoyé"
+            ]);
+        }
+    }
+
+    public function sendEmail($email1, $email2, $fullName)
+    {
+        $profSubject = Auth::user()->subject;
+        $text = "L'élève ".$fullName." est absent(e) au cours de ".strtoupper($profSubject)."";
+
+        // Envoyez l'e-mail avec le code généré
+        Mail::send('emails.absenceEmail', ['text' => $text], function($message) use ($email1, $email2){
+            $message->to($email1)
+                    ->cc($email2)
+                    ->subject('ABSENCIA');
+        });
+    }
+
 }

@@ -120,12 +120,6 @@
                       <p>Ajouter</p>
                     </a>
                   </li>
-                  <li class="nav-item">
-                    <a href="" class="nav-link">
-                      <i class="far fa-circle nav-icon"></i>
-                      <p>Gérer des administrateurs</p>
-                    </a>
-                  </li>
                 </ul>
               </li>
             @endif

@@ -30,6 +30,7 @@ class User extends Authenticatable
         'password',
         'user_type',
         'connected',
+        'subject',
     ];
 
 

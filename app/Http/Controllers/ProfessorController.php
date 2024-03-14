@@ -83,6 +83,7 @@ class ProfessorController extends Controller
             "email.required" => "Remplir le champ Email!",
             "email.unique" => "L'email ".$request-> email. " existe déjà!",
             "gender.required" => "Sélectionnez le genre!",
+            "subject.required" => "Remplir le champ Matière!",
             "password.required" => "Remplir le champ mot de passe!",
             "password.min" => "Le mot de passe doit comporter au moins 8 caracteres!",
             "password.confirmed" => "Les deux champs de mots de passe ne correspondent pas",
@@ -93,6 +94,7 @@ class ProfessorController extends Controller
             'first_name' => ['required'],
             'email' => ['required','unique:users'],
             'gender' => ['required'],
+            'subject' => ['required'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ], $error_messages);
 
@@ -113,6 +115,7 @@ class ProfessorController extends Controller
             'gender' => $request-> gender,
             'user_type' => 3,
             'password' => Hash::make($request['password']),
+            'subject' => $request-> subject,
         ]);
 
         return response()->json([
@@ -135,6 +138,7 @@ class ProfessorController extends Controller
             "first_name" => $User->first_name,
             "email" => $User->email,
             "gender" => $User->gender,
+            "subject" => $User->subject,
         ]);
     }
 
@@ -146,6 +150,7 @@ class ProfessorController extends Controller
             "email.required" => "Remplir le champ Email!",
             // "email.unique" => "L'email ".$request-> email. " existe déjà!",
             "gender.required" => "Sélectionnez le genre!",
+            "subject.required" => "Remplir le champ Matière!",
         ];
 
         $validator = Validator::make($request->all(),[
@@ -153,6 +158,7 @@ class ProfessorController extends Controller
             'first_name' => ['required'],
             'email' => ['required'],
             'gender' => ['required'],
+            'subject' => ['required'],
         ], $error_messages);
 
         if($validator->fails())
@@ -174,6 +180,7 @@ class ProfessorController extends Controller
                     'last_name' => $request-> last_name,
                     'first_name' => $request-> first_name,
                     'gender' => $request-> gender,
+                    'subject' => $request-> subject,
                 ]);
                 return response()->json([
                     "status" => true,
