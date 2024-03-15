@@ -16,19 +16,22 @@ class StudentController extends Controller
     public function showListStudent($classroom_id)
     {
         // composer require yajra/laravel-datatables-oracle
+        $Student = Student::where('classrooms_id', $classroom_id)->get();
         if(request()->ajax()){
-            $Student = Student::where('classrooms_id', $classroom_id);
             // $Student = Student::all();
             return DataTables::of($Student)
                 ->addIndexColumn()
                 ->addColumn('action', function($row){
                     $btn = '<a href="javascript:void(0)" data-toggle="modal" data-target="#modal-update"  data-id="'.$row->id.'" data-original-title="Edit" class="btn btn-warning btn-sm editStudent">Modifier</a>'.
-                    $btn = ' <a  data-id="'.$row->id.'" data-name="'.$row->fullName().'" data-original-title="Edit" class="btn btn-dark btn-sm absent">A?</a>';
+                    $btn = ' <a  data-id="'.$row->id.'" data-name="'.$row->fullName().'" data-original-title="Edit" class="btn btn-dark btn-sm absent">A?</a>'.
+                    $btn = ' <a  data-id="'.$row->id.'" data-original-title="Edit" class="btn btn-dark btn-sm moove">T?</a>';
                     return $btn;
                 })
                 ->rawColumns(['action'])
                 ->make(true);
         }
+        $Classroom = Classroom::where('schools_id', Auth::user()->school_id)->get();
+        return view('student', compact('Student', 'Classroom'));
     }
 
     //get user info by Id

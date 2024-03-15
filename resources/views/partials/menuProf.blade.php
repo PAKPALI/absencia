@@ -52,92 +52,96 @@
          </li>
          @endif
          <!-- Manage school -->
-         <li class="nav-header">RESPONSABLE</li>
-         @if( Route::currentRouteName() == "classroomManager")
-         <li class="nav-item">
-           <a href="#" class="nav-link active">
-             <i class="nav-icon fas fa-box"></i>
-             <p>
-               Responsable
-               <i class="fas fa-angle-left right"></i>
-             </p>
-           </a>
-           @foreach ($classroomManager as $cm)
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="{{route('classroomManager',encrypt(['id' => $cm->id]))}}" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>{{$cm->name}}</p>
-                </a>
-              </li>
-            </ul>
-           @endforeach
-         </li>
-         @else
-         <li class="nav-item">
-           <a href="#" class="nav-link">
-             <i class="nav-icon fas fa-box"></i>
-             <p>
-             Responsable
-               <i class="fas fa-angle-left right"></i>
-             </p>
-           </a>
-           @foreach ($classroomManager as $cm)
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="{{route('classroomManager',encrypt(['id' => $cm->id]))}}" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>{{$cm->name}}</p>
-                </a>
-              </li>
-            </ul>
-           @endforeach
-         </li>
-         @endif
+         @if($classroomManager)
+          <li class="nav-header">RESPONSABLE</li>
+          @if( Route::currentRouteName() == "classroomManager")
+          <li class="nav-item">
+            <a href="#" class="nav-link active">
+              <i class="nav-icon fas fa-box"></i>
+              <p>
+                Responsable
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            @foreach ($classroomManager as $cm)
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{route('classroomManager',encrypt(['id' => $cm->id]))}}" class="nav-link active">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>{{$cm->name}}</p>
+                  </a>
+                </li>
+              </ul>
+            @endforeach
+          </li>
+          @else
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-box"></i>
+              <p>
+              Responsable
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            @foreach ($classroomManager as $cm)
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{route('classroomManager',encrypt(['id' => $cm->id]))}}" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>{{$cm->name}}</p>
+                  </a>
+                </li>
+              </ul>
+            @endforeach
+          </li>
+          @endif
+        @endif
 
          <!-- manage classroom -->
          <li class="nav-header"> INTERVENANT</li>
-         @if( Route::currentRouteName() == "classroomProfessor")
-          <li class="nav-item">
-            <a href="#" class="nav-link active">
-              <i class="nav-icon fas fa-users"></i>
-              <p>
-                Intervenant
-                <i class="fas fa-angle-left right"></i>
-              </p>
-            </a>
-            @foreach ($classroomProfessor as $cp)
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="{{route('classroomProfessor',encrypt(['id' => $cp->id]))}}" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>{{$cp->name}}</p>
-                </a>
-              </li>
-            </ul>
-           @endforeach
-          </li>
-         @else
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-users"></i>
-              <p>
-                Intervenant
-                <i class="fas fa-angle-left right"></i>
-              </p>
-            </a>
-            @foreach ($classroomProfessor as $cp)
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="{{route('classroomProfessor',encrypt(['id' => $cp->id]))}}" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>{{$cp->name}}</p>
-                </a>
-              </li>
-            </ul>
-           @endforeach
-          </li>
-         @endif
+         @if($classroomProfessor)
+          @if( Route::currentRouteName() == "classroomProfessor")
+            <li class="nav-item">
+              <a href="#" class="nav-link active">
+                <i class="nav-icon fas fa-users"></i>
+                <p>
+                  Intervenant
+                  <i class="fas fa-angle-left right"></i>
+                </p>
+              </a>
+              @foreach ($classroomProfessor as $cp)
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{route('classroomProfessor',encrypt(['id' => $cp->id]))}}" class="nav-link active">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>{{$cp->name}}</p>
+                  </a>
+                </li>
+              </ul>
+              @endforeach
+            </li>
+          @else
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-users"></i>
+                <p>
+                  Intervenant
+                  <i class="fas fa-angle-left right"></i>
+                </p>
+              </a>
+              @foreach ($classroomProfessor as $cp)
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{route('classroomProfessor',encrypt(['id' => $cp->id]))}}" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>{{$cp->name}}</p>
+                  </a>
+                </li>
+              </ul>
+            @endforeach
+            </li>
+          @endif
+        @endif
        </ul>
      </nav>
      <!-- /.sidebar-menu -->
