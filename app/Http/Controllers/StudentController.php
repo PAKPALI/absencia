@@ -30,8 +30,6 @@ class StudentController extends Controller
                 ->rawColumns(['action'])
                 ->make(true);
         }
-        $Classroom = Classroom::where('schools_id', Auth::user()->school_id)->get();
-        return view('student', compact('Student', 'Classroom'));
     }
 
     //get user info by Id
@@ -191,6 +189,43 @@ class StudentController extends Controller
                     ->cc($email2)
                     ->subject('ABSENCIA');
         });
+    }
+
+    public function moove(Request $request)
+    {
+        $error_messages = [
+            "classroom.required" => "Sélectionnez la classe!",
+            "student.required" => "Sélectionnez au moins un étudiant!",
+        ];
+
+        $validator = Validator::make($request->all(),[
+            'classroom' => ['required'],
+            'student' => ['required'],
+        ], $error_messages);
+
+        if($validator->fails())
+            return response()->json([
+                "status" => false,
+                "reload" => false,
+                "title" => "TRANSFERT ERRONE".$request-> student."f",
+                "msg" => $validator->errors()->first()
+            ]);
+
+        // $students = explode(',', $request-> student);
+        $students = $request-> student;
+        $Classroom = Classroom::find($request->classroom);
+        foreach($students as $student){
+            $student -> update([
+                'classrooms_id' => $request->classroom,
+            ]);
+        }
+        return response()->json([
+            "status" => true,
+            "reload" => true,
+            // "redirect_to" => route('user'),
+            "title" => "TRANSFERT REUSSI",
+            "msg" => "Transfert réussi vers la classe ".$Classroom->name
+        ]);
     }
 
 }

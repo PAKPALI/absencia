@@ -178,7 +178,7 @@
 
                 <div class="card card-primary">
                     <div class="card-header">
-                        <h3 class="card-title"><small>Ajouter les classes {{$Classroom}}</small></h3>
+                        <h3 class="card-title"><small>Déplacer les étudiants</small></h3>
                     </div>
 
                     <form id="moove">
@@ -186,20 +186,20 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="form-group col-12">
-                                    <label>Responsable</label>
-                                    <select name="manager" class="form-control">
+                                    <label>Classe</label>
+                                    <select name="classroom" class="form-control">
                                         <option value="">Sélectionnez la classe</option>
-                                        @foreach ($Classroom as $classroom)
-                                            {{-- <option value="{{$classroom->id}}">{{strtoupper($classroom->name)}}</option> --}}
+                                        @foreach ($AllClassroom as $classroom)
+                                            <option value="{{$classroom->id}}">{{strtoupper($classroom->name)}}</option>
                                         @endforeach
                                     </select>
                                 </div>
                                 <div class="form-group col-12">
                                     <label>Etudiants</label>
-                                    <select name="professor[]" class="duallistbox" multiple="multiple">
-                                        {{--@foreach ($Student as $student)
+                                    <select name="student[]" class="duallistbox" multiple="multiple">
+                                        @foreach ($Student as $student)
                                             <option value="{{$student->id}}">{{strtoupper($student->fullName())}}</option>
-                                        @endforeach--}}
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
@@ -211,7 +211,7 @@
                             </div>
                         </div>
                         <div class="card-footer">
-                            <button type="submit" class="btn btn-primary">Valider</button>
+                            <button type="submit" class="btn btn-primary">Déplacer</button>
                         </div>
                     </form>
                 </div>
@@ -538,34 +538,51 @@
             })
         });
 
-        $('body').on('click', '.moove', function () {
-            var csrfToken = $('meta[name="csrf-token"]').attr('content');
-            var id = $(this).data('id');
+        $('#moove').submit(function() {
+            event.preventDefault();
+            $('#add_loader').fadeIn();
             $.ajax({
-                headers: {
-                    'X-CSRF-TOKEN': csrfToken
-                },
                 type: 'POST',
-                url: "{{route('getStudentInfoById')}}",
-                data: { id: id},
+                url: "{{route('moove')}}",
+                //enctype: 'multipart/form-data',
+                data: $('#moove').serialize(),
                 datatype: 'json',
-                success: function (data){
+                success: function(data){
+                    $('#add_loader').hide();
                     console.log(data)
-                    if (data.status)
-                    {
-                        // $('#townName').val(data.townName);
-                        $('#studentId').val(id);
-                        $('#last_name').val(data.last_name);
-                        $('#first_name').val(data.first_name);
-                        $('#email').val(data.email1);
-                        $('#email2').val(data.email2);
-                        $('#num1').val(data.num1);
-                        $('#num2').val(data.num2);
-                        $('#gender').val(data.gender);
+                    if (data.status) {
+                        Swal.fire({
+                            icon: "success",
+                            title: data.title,
+                            text: data.msg,
+                        }).then(() => {
+                            user_list.draw();
+                        })
+                    } else {
+                        $('#add_loader').fadeOut();
+                        Swal.fire({
+                            title: data.title,
+                            text: data.msg,
+                            icon: 'error',
+                            confirmButtonText: "D'accord",
+                            confirmButtonColor: '#A40000',
+                        })
                     }
                 },
+                error: function(data) {
+                    console.log(data)
+                    $('#add_loader').fadeOut();
+                    Swal.fire({
+                        icon: "error",
+                        title: "erreur",
+                        text: "Impossible de communiquer avec le serveur.",
+                        timer: 3600,
+                    })
+                }
             });
+            return false;
         });
+        
     });
 </script>
 
