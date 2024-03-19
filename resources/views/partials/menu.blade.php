@@ -123,6 +123,46 @@
                 </ul>
               </li>
             @endif
+
+            <!-- Manage school -->
+            <li class="nav-header"> GESTION ECOLE</li>
+            @if( Route::currentRouteName() == "school")
+            <li class="nav-item">
+              <a href="#" class="nav-link active">
+                <i class="nav-icon fas fa-box"></i>
+                <p>
+                  Ecole
+                  <i class="fas fa-angle-left right"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{route('school')}}" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Liste</p>
+                  </a>
+                </li>
+              </ul>
+            </li>
+            @else
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-box"></i>
+                <p>
+                  Ecole
+                  <i class="fas fa-angle-left right"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{route('school')}}" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Liste</p>
+                  </a>
+                </li>
+              </ul>
+            </li>
+         @endif
           </ul>
         </nav>
         <!-- /.sidebar-menu -->

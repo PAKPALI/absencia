@@ -21,7 +21,11 @@ class SchoolController extends Controller
     {
         // composer require yajra/laravel-datatables-oracle
         if(request()->ajax()){
-            $School = School::where('users_id', Auth::user()->id);
+            if(Auth::user()->user_type==1){
+                $School = School::all();
+            }else{
+                $School = School::where('users_id', Auth::user()->id);
+            }
             return DataTables::of($School)
                 ->addIndexColumn()
                 ->editColumn('pays_id' , function($School){
@@ -30,16 +34,7 @@ class SchoolController extends Controller
                 ->editColumn('users_id' , function($School){
                     return $School->user->last_name ?? '-';
                 })
-                ->editColumn('connected' , function($School){
-                    if($School->connected){
-                        return 'ACTIVER';
-                        // $btn = '<a href="javascript:void(0)" class="btn btn-success btn-sm">ACTIVER</a>';
-                    }else{
-                        return 'DESACTIVER';
-                        // $btn = '<a class="btn btn-danger btn-sm">DESACTIVER</a>';
-                    }
-                    // return $btn;
-                })
+                
                 // ->editColumn('created_at' , function($Users){
                 //     return $Users->created_at->translatedFormat('d M Y');
                 // })
@@ -176,6 +171,39 @@ class SchoolController extends Controller
                     // "redirect_to" => route('user'),
                     "title" => "MIS A JOUR REUSSIE",
                     "msg" => "Mis à jour reussie"
+                ]);
+            }
+        }
+    }
+
+    public function connected(Request $request)
+    {
+        $id = $request-> id;
+        $connected = $request-> connected;
+        
+        $search = School::find($id);
+        if($search){
+            if($connected == 0){
+                $search -> update([
+                    'connected' => false,
+                ]);
+                return response()->json([
+                    "status" => true,
+                    "reload" => true,
+                    "redirect_to" => route('user'),
+                    "title" => "CONNEXION DESACTIVEE",
+                    "msg" => "Désactivation réussie pour ".$search->name
+                ]);
+            }else{
+                $search -> update([
+                    'connected' => true,
+                ]);
+                return response()->json([
+                    "status" => true,
+                    "reload" => true,
+                    "redirect_to" => route('user'),
+                    "title" => "CONNEXION ACTIVEE",
+                    "msg" => "Activation réussie pour ".$search->name
                 ]);
             }
         }

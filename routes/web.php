@@ -68,16 +68,17 @@ Route::prefix('utilisateurs')->middleware(['auth'])->group(function () {
 });
 
 // manage school
-Route::prefix('school')->middleware(['auth'])->group(function () {
+Route::prefix('school')->middleware(['auth'])->controller(SchoolController::class)->group(function () {
     // Get
-    Route::get('', [SchoolController::class, 'school'])->name('school');
-    Route::get('showListSchool', [SchoolController::class, 'showListSchool'])->name('showListSchool');
+    Route::get('', 'school')->name('school');
+    Route::get('showListSchool', 'showListSchool')->name('showListSchool');
 
     //post
-    Route::post('getSchoolInfoById', [SchoolController::class, 'getSchoolInfoById']);
-    Route::post('add', [SchoolController::class, "add"]);
-    Route::post('update', [SchoolController::class, 'update']);
-    Route::post('delete', [SchoolController::class, 'delete']);
+    Route::post('getSchoolInfoById', 'getSchoolInfoById');
+    Route::post('add', "add");
+    Route::post('update', 'update');
+    Route::post('connected', 'connected');
+    Route::post('delete', 'delete');
 });
 
 // manage professor

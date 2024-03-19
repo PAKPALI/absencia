@@ -23,8 +23,8 @@ class StudentController extends Controller
                 ->addIndexColumn()
                 ->addColumn('action', function($row){
                     $btn = '<a href="javascript:void(0)" data-toggle="modal" data-target="#modal-update"  data-id="'.$row->id.'" data-original-title="Edit" class="btn btn-warning btn-sm editStudent">Modifier</a>'.
-                    $btn = ' <a  data-id="'.$row->id.'" data-name="'.$row->fullName().'" data-original-title="Edit" class="btn btn-dark btn-sm absent">A?</a>'.
-                    $btn = ' <a  data-id="'.$row->id.'" data-original-title="Edit" class="btn btn-dark btn-sm moove">T?</a>';
+                    $btn = ' <a  data-id="'.$row->id.'" data-name="'.$row->fullName().'" data-original-title="Edit" class="btn btn-dark btn-sm absent">A?</a>';
+                    // $btn = ' <a  data-id="'.$row->id.'" data-original-title="Edit" class="btn btn-dark btn-sm moove">T?</a>';
                     return $btn;
                 })
                 ->rawColumns(['action'])
@@ -56,8 +56,8 @@ class StudentController extends Controller
             "first_name.required" => "Remplir le champ Prénom!",
             // "email.required" => "Remplir le champ Email!",
             // "email2.required" => "Remplir le champ Email2!",
-            // "email.unique" => "L'email ".$request-> email. " existe déjà!",
-            "email2.unique" => "L'email ".$request-> email. " existe déjà!",
+            "email.unique" => "L'email ".$request-> email. " existe déjà!",
+            "email2.unique" => "L'email ".$request-> email2. " existe déjà!",
             // "num1.numeric" => "Remplir le champ Numéro 1 avec des chiffres!",
             // "num2.numeric" => "Remplir le champ Numéro 2 avec des chiffres!",
             "gender.required" => "Sélectionnez le genre!",
@@ -66,7 +66,8 @@ class StudentController extends Controller
         $validator = Validator::make($request->all(),[
             'last_name' => ['required'],
             'first_name' => ['required'],
-            // 'email' => ['unique:users'],
+            'email' => ['unique:students'],
+            'email' => ['unique:students'],
             // 'num1' => ['numeric'],
             // 'num2' => ['numeric'],
             'gender' => ['required'],
@@ -105,8 +106,8 @@ class StudentController extends Controller
         $error_messages = [
             "last_name.required" => "Remplir le champ Nom!",
             "first_name.required" => "Remplir le champ Prénom!",
-            // "email.required" => "Remplir le champ Email!",
-            // "email2.required" => "Remplir le champ Email2!",
+            "email.unique" => "L'email ".$request-> email. " existe déjà!",
+            "email2.unique" => "L'email ".$request-> email2. " existe déjà!",
             "email.unique" => "L'email ".$request-> email. " existe déjà!",
             // "email2.unique" => "L'email ".$request-> email. " existe déjà!",
             // "num1.numeric" => "Remplir le champ Numéro 1 avec des chiffres!",
@@ -117,7 +118,8 @@ class StudentController extends Controller
         $validator = Validator::make($request->all(),[
             'last_name' => ['required'],
             'first_name' => ['required'],
-            // 'email' => ['unique:users'],
+            'email' => ['unique:students'],
+            'email' => ['unique:students'],
             // 'num1' => ['numeric'],
             // 'num2' => ['numeric'],
             'gender' => ['required'],
@@ -185,9 +187,14 @@ class StudentController extends Controller
 
         // Envoyez l'e-mail avec le code généré
         Mail::send('emails.absenceEmail', ['text' => $text], function($message) use ($email1, $email2){
-            $message->to($email1)
-                    ->cc($email2)
-                    ->subject('ABSENCIA');
+            if ($email1) {
+                $message->to($email1);
+            }
+            
+            if ($email2){
+                $message->cc($email2);
+            }
+            $message->subject('ABSENCIA');
         });
     }
 
@@ -214,10 +221,17 @@ class StudentController extends Controller
         // $students = explode(',', $request-> student);
         $students = $request-> student;
         $Classroom = Classroom::find($request->classroom);
-        foreach($students as $student){
-            $student -> update([
-                'classrooms_id' => $request->classroom,
-            ]);
+        foreach ($students as $studentId) {
+            // Find student
+            $student = Student::find($studentId);
+        
+            // verify if student exist
+            if ($student) {
+                // update student classroom id
+                $student->update([
+                    'classrooms_id' => $request->classroom,
+                ]);
+            }
         }
         return response()->json([
             "status" => true,

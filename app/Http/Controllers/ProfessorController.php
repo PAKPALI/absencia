@@ -245,7 +245,7 @@ class ProfessorController extends Controller
     {
         $decryptedId = decrypt($id);
         $Classroom = Classroom::find($decryptedId['id']);
-        $AllClassroom = Classroom::where('schools_id', Auth::user()->school_id)->get();
+        $AllClassroom = Classroom::where('schools_id', Auth::user()->school_id)->whereNotIn('id', [$decryptedId['id']])->get();
         $Student = Student::where('classrooms_id', $decryptedId['id'])->get();
         return view('student',[
             'Classroom' => $Classroom,
@@ -259,8 +259,12 @@ class ProfessorController extends Controller
     {
         $decryptedId = decrypt($id);
         $Classroom = Classroom::find($decryptedId['id']);
+        $AllClassroom = Classroom::where('schools_id', Auth::user()->school_id)->whereNotIn('id', [$decryptedId['id']])->get();
+        $Student = Student::where('classrooms_id', $decryptedId['id'])->get();
         return view('student',[
             'Classroom' => $Classroom,
+            'AllClassroom' => $AllClassroom,
+            'Student' => $Student,
             'Manager' => 0,
         ]);
     }

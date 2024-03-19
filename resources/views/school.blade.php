@@ -174,8 +174,16 @@
                 var status ='';
                 if (data.connected) {
                     status +=`<span class='badge bg-success'>Actif</span>`;
+                    status +=`<div data-id="${data.id}" class="custom-control checkbox custom-switch custom-switch-off-danger custom-switch-on-success">
+                                        <input type="checkbox" class="custom-control-input" id="checkbox_'${data.id}'" checked>
+                                        <label class="custom-control-label" for="checkbox_'${data.id}'"></label>
+                                    </div>`;
                 }else{
-                    status +=`<span class='badge bg-danger'>Désactif</span>`;
+                    status +=`<span class='badge bg-danger'>Inactif</span>`;
+                    status +=`<div data-id="${data.id}" class="custom-control checkbox custom-switch custom-switch-off-danger custom-switch-on-success">
+                                        <input type="checkbox" class="custom-control-input" id="checkbox_'${data.id}'">
+                                        <label class="custom-control-label" for="checkbox_'${data.id}'"></label>
+                                    </div>`;
                 }
                 $('td:eq(6)', row).html(status);
             },
@@ -296,6 +304,112 @@
                 }
             });
             return false;
+        });
+
+        $('body').on('change', '.custom-control-input', function () {
+            var csrfToken = $('meta[name="csrf-token"]').attr('content');
+            var Id = $(this).closest('.custom-control').data('id');
+            var isChecked = $(this).prop('checked');
+            // alert(isChecked)
+            if(isChecked){
+                var dataToSend = {
+                    connected: 1,
+                    id: Id
+                };
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Récupère automatiquement le token CSRF depuis la balise meta
+                    },
+                    type: 'POST',
+                    url: 'school/connected',
+                    //enctype: 'multipart/form-data',
+                    data: dataToSend,
+                    datatype: 'json',
+                    success: function(data) {
+                        //var object = JSON.parse(data);
+                        console.log(data)
+                        if (data.status) {
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                icon: "success",
+                                title: data.title,
+                                text: data.msg,
+                                timer: 3000
+                            })
+                            school_list.draw();
+                        } else {
+                            Swal.fire({
+                                title: data.title,
+                                text: data.msg,
+                                icon: 'error',
+                                confirmButtonText: "D'accord",
+                                confirmButtonColor: '#A40000',
+                            })
+                        }
+                    },
+                    error: function(data) {
+                        console.log(data)
+                        Swal.fire({
+                            icon: "error",
+                            title: "erreur",
+                            text: "Impossible de communiquer avec le serveur.",
+                            timer: 3600,
+                        })
+                    }
+                });
+                return false;
+            }else{
+                var dataToSend = {
+                    connected: 0,
+                    id: Id
+                };
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Récupère automatiquement le token CSRF depuis la balise meta
+                    },
+                    type: 'POST',
+                    url: 'school/connected',
+                    //enctype: 'multipart/form-data',
+                    data: dataToSend,
+                    datatype: 'json',
+                    success: function(data) {
+                        //var object = JSON.parse(data);
+                        console.log(data)
+                        if (data.status) {
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                icon: "success",
+                                title: data.title,
+                                text: data.msg,
+                                timer: 3000
+                            })
+                            school_list.draw();
+                        } else {
+                            Swal.fire({
+                                title: data.title,
+                                text: data.msg,
+                                icon: 'error',
+                                confirmButtonText: "D'accord",
+                                confirmButtonColor: '#A40000',
+                            })
+                        }
+                    },
+                    error: function(data) {
+                        console.log(data)
+                        Swal.fire({
+                            icon: "error",
+                            title: "erreur",
+                            text: "Impossible de communiquer avec le serveur.",
+                            timer: 3600,
+                        })
+                    }
+                });
+                return false;
+            }
         });
 
         $('body').on('click', '.deleteUser', function () {
