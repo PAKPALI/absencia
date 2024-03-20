@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
+use App\Models\School;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -64,12 +65,12 @@ class LoginController extends Controller
                 "msg" => $validator->errors()->first()]);
             
             $user = User::where('email', $request-> email)->first();
+            $School = School::where('id', $user->school_id )->first();
 
             if($user && Hash::check($request-> password, $user-> password)){
                 if($user->user_type == 1){
                     Auth::login($user);
                     // $request->session()->regenerate();           
-
                     return response()->json([
                         "status" => true,
                         "reload" => true,
@@ -79,43 +80,65 @@ class LoginController extends Controller
                         "msg" => "connexion réussie."
                     ]);
                 }elseif($user->user_type == 2){
-                    if($user->connected){
+                    if($School){
+                        if($School->connected==1){
+                            Auth::login($user);         
+                            return response()->json([
+                                "status" => true,
+                                "reload" => true,
+                                "redirect_to" => route('dashboardAdmin'),
+                                "title" => "CONNEXION REUSSI",
+                                'check' => Auth::check(),
+                                "msg" => "connexion réussie"
+                            ]);
+                        }else{
+                            return response()->json([
+                                "status" => false,
+                                "reload" => true,
+                                'check' => Auth::check(),
+                                "title" => "CONNECTION ECHOUEE",
+                                "msg" => "Vous n'êtes pas autoriser à vous connecter"
+                            ]);
+                        }
+                    }else{
                         Auth::login($user);         
                         return response()->json([
                             "status" => true,
                             "reload" => true,
-                            "redirect_to" => route('tableau'),
+                            "redirect_to" => route('dashboardAdmin'),
                             "title" => "CONNEXION REUSSI",
-                            'check' => Auth::check(),
-                            "msg" => "connexion réussie."
-                        ]);
-                    }else{
-                        return response()->json([
-                            "status" => false,
-                            "reload" => true,
-                            'check' => Auth::check(),
-                            "title" => "CONNECTION ECHOUEE",
-                            "msg" => "Vous n'etes pas autoriser à vous connecter"
-                        ]);
-                    }
-                }else{
-                    if($user->connected){
-                        Auth::login($user);
-                        return response()->json([
-                            "status" => true,
-                            "reload" => true,
-                            "redirect_to" => route('tableau'),
-                            "title" => "CONNEXION REUSSIE",
                             'check' => Auth::check(),
                             "msg" => "connexion réussie"
                         ]);
+                    }
+                }else{
+                    if($School AND $School->connected==1){
+                        if($user->connected){
+                            Auth::login($user);
+                            return response()->json([
+                                "status" => true,
+                                "reload" => true,
+                                "redirect_to" => route('tableau'),
+                                "title" => "CONNEXION REUSSIE",
+                                'check' => Auth::check(),
+                                "msg" => "connexion réussie"
+                            ]);
+                        }else{
+                            return response()->json([
+                                "status" => false,
+                                "reload" => true,
+                                'check' => Auth::check(),
+                                "title" => "CONNECTION ECHOUEE",
+                                "msg" => "Vous n'êtes pas autoriser a vous connecter"
+                            ]);
+                        }
                     }else{
                         return response()->json([
                             "status" => false,
                             "reload" => true,
                             'check' => Auth::check(),
                             "title" => "CONNECTION ECHOUEE",
-                            "msg" => "Vous n'etes pas autoriser a vous connecter"
+                            "msg" => "Vous n'êtes pas autoriser à vous connecter"
                         ]);
                     }
                 }

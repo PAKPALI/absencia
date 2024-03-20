@@ -151,6 +151,7 @@
             $('#text').html('Vous avez déjà une école a votre actif');
         })
 
+        var userType = {{ $userType }};
         var school_list = $('#school_list').DataTable({
             processing: true,
             serverSide: true,
@@ -170,20 +171,25 @@
                 $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
                 $('#school_list').css('width','100%');
             },
+            
             rowCallback: function(row, data, iDisplayIndex) {
                 var status ='';
                 if (data.connected) {
                     status +=`<span class='badge bg-success'>Actif</span>`;
-                    status +=`<div data-id="${data.id}" class="custom-control checkbox custom-switch custom-switch-off-danger custom-switch-on-success">
-                                        <input type="checkbox" class="custom-control-input" id="checkbox_'${data.id}'" checked>
-                                        <label class="custom-control-label" for="checkbox_'${data.id}'"></label>
-                                    </div>`;
+                    if(userType == 1){
+                        status +=`<div data-id="${data.id}" class="custom-control checkbox custom-switch custom-switch-off-danger custom-switch-on-success">
+                                <input type="checkbox" class="custom-control-input" id="checkbox_'${data.id}'" checked>
+                                <label class="custom-control-label" for="checkbox_'${data.id}'"></label>
+                            </div>`;
+                    }
                 }else{
                     status +=`<span class='badge bg-danger'>Inactif</span>`;
-                    status +=`<div data-id="${data.id}" class="custom-control checkbox custom-switch custom-switch-off-danger custom-switch-on-success">
-                                        <input type="checkbox" class="custom-control-input" id="checkbox_'${data.id}'">
-                                        <label class="custom-control-label" for="checkbox_'${data.id}'"></label>
-                                    </div>`;
+                    if(userType==1){
+                        status +=`<div data-id="${data.id}" class="custom-control checkbox custom-switch custom-switch-off-danger custom-switch-on-success">
+                                <input type="checkbox" class="custom-control-input" id="checkbox_'${data.id}'">
+                                <label class="custom-control-label" for="checkbox_'${data.id}'"></label>
+                            </div>`;
+                    }
                 }
                 $('td:eq(6)', row).html(status);
             },

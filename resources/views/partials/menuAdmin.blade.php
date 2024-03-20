@@ -27,7 +27,7 @@
                 with font-awesome or any other icon font library -->
          @if( Route::currentRouteName() == "tableau")
          <li class="nav-item menu">
-           <a href="{{route('tableau')}}" class="nav-link active">
+           <a href="{{route('dashboardAdmin')}}" class="nav-link active">
              <i class="nav-icon fas fa-tachometer-alt"></i>
              <p>
                Tableau de bord
@@ -36,7 +36,7 @@
          </li>
          @else
          <li class="nav-item menu">
-           <a href="{{route('tableau')}}" class="nav-link">
+           <a href="{{route('dashboardAdmin')}}" class="nav-link">
              <i class="nav-icon fas fa-tachometer-alt"></i>
              <p>
                Tableau de bord

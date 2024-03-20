@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Pays;
 use App\Models\User;
+use App\Models\School;
+use App\Models\Classroom;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use App\Http\Controllers\Controller;
@@ -19,6 +21,26 @@ class UserController extends Controller
 
         return view('user',[
             'Country' => $Country,
+        ]);
+    }
+    
+    public function dashboardAdmin()
+    {
+        $authUserSchoolId = Auth::user()->school_id;
+        $SchoolCount = School::all()->count();
+        $ClassroomCount = Classroom::where('schools_id',$authUserSchoolId)->count();
+        $Professor = User::where('school_id',$authUserSchoolId)->where('user_type','3');
+        $ProfessorCount = $Professor->count();
+        $ProfessorActifCount = $Professor->where('connected',1)->count();
+        $ProfessorInactifCount = $Professor->where('connected',0)->count();
+        // dd();
+
+        return view('dashboard/dashboardAdmin',[
+            'SchoolCount' => $SchoolCount,
+            'ProfessorCount' => $ProfessorCount,
+            'ProfessorActifCount' => $ProfessorActifCount,
+            'ProfessorInactifCount' => $ProfessorInactifCount,
+            '$ClassroomCount' => $ClassroomCount,
         ]);
     }
 
@@ -310,7 +332,6 @@ class UserController extends Controller
             }
 
         }else{
-
             return response()->json([
 
                 "status" => false,

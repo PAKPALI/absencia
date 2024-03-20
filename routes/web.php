@@ -53,18 +53,19 @@ Route::prefix('pays')->middleware(['auth'])->group(function () {
 });
 
 // user
-Route::prefix('utilisateurs')->middleware(['auth'])->group(function () {
+Route::prefix('utilisateurs')->middleware(['auth'])->controller(UserController::class)->group(function () {
     // Get
-    Route::get('', [UserController::class, 'user'])->name('user');
-    Route::get('profil', [UserController::class, 'profil'])->name('profil');
-    Route::get('showListUser', [UserController::class, 'showListUser'])->name('showListUser');
+    Route::get('accueil', 'dashboardAdmin')->name('dashboardAdmin');
+    Route::get('', 'user')->name('user');
+    Route::get('profil', 'profil')->name('profil');
+    Route::get('showListUser', 'showListUser')->name('showListUser');
 
     //post
-    Route::post('getUserInfoById', [UserController::class, 'getUserInfoById']);
-    Route::post('add_user', [UserController::class, "add_user"]);
-    Route::post('update_user', [UserController::class, 'update_user']);
-    Route::post('delete_user', [UserController::class, 'delete_user']);
-    Route::post('updatePassword', [UserController::class, 'updatePassword']);
+    Route::post('getUserInfoById', 'getUserInfoById');
+    Route::post('add_user', "add_user");
+    Route::post('update_user', 'update_user');
+    Route::post('delete_user', 'delete_user');
+    Route::post('updatePassword', 'updatePassword');
 });
 
 // manage school

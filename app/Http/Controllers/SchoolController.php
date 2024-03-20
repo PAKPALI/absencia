@@ -14,7 +14,10 @@ class SchoolController extends Controller
 {
     public function school()
     {
-        return view('school');
+        $userType = Auth::user()->user_type;
+        return view('school',[
+            'userType' => $userType,
+        ]);
     }
 
     public function showListSchool(Request $request)
@@ -34,7 +37,6 @@ class SchoolController extends Controller
                 ->editColumn('users_id' , function($School){
                     return $School->user->last_name ?? '-';
                 })
-                
                 // ->editColumn('created_at' , function($Users){
                 //     return $Users->created_at->translatedFormat('d M Y');
                 // })
