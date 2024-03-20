@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Pays;
 use App\Models\User;
 use App\Models\School;
+use App\Models\Student;
 use App\Models\Classroom;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
@@ -29,18 +30,19 @@ class UserController extends Controller
         $authUserSchoolId = Auth::user()->school_id;
         $SchoolCount = School::all()->count();
         $ClassroomCount = Classroom::where('schools_id',$authUserSchoolId)->count();
+        // $Student = Student::where('classrooms_id', $classroom_id)->get();
         $Professor = User::where('school_id',$authUserSchoolId)->where('user_type','3');
         $ProfessorCount = $Professor->count();
         $ProfessorActifCount = $Professor->where('connected',1)->count();
         $ProfessorInactifCount = $Professor->where('connected',0)->count();
-        // dd();
+        // dd($ClassroomCount);
 
         return view('dashboard/dashboardAdmin',[
             'SchoolCount' => $SchoolCount,
             'ProfessorCount' => $ProfessorCount,
             'ProfessorActifCount' => $ProfessorActifCount,
             'ProfessorInactifCount' => $ProfessorInactifCount,
-            '$ClassroomCount' => $ClassroomCount,
+            'ClassroomCount' => $ClassroomCount,
         ]);
     }
 
