@@ -11,7 +11,5 @@ class Pays extends Model
     use HasFactory;
     protected $fillable = ['nom'];
 
-    public function sousCaisse(){
-        return $this->hasMany(SousCaisse::class);
-    }
+    
 }

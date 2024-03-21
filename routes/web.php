@@ -126,6 +126,7 @@ Route::prefix('student')->middleware(['auth'])->controller(StudentController::cl
     Route::post('update', 'update')->name('updateStudent');
     Route::post('absent', 'absent')->name('Absent');
     Route::post('moove', 'moove')->name('moove');
+    Route::post('archive', 'archive')->name('archive');
 });
 
 Route::post('outUser', [UserController::class, 'outUser'])->name('outUser');

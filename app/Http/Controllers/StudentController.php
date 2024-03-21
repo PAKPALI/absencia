@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Absence;
 use App\Models\Student;
 use App\Models\Classroom;
 use Illuminate\Http\Request;
@@ -22,9 +23,9 @@ class StudentController extends Controller
             return DataTables::of($Student)
                 ->addIndexColumn()
                 ->addColumn('action', function($row){
-                    $btn = '<a href="javascript:void(0)" data-toggle="modal" data-target="#modal-update"  data-id="'.$row->id.'" data-original-title="Edit" class="btn btn-warning btn-sm editStudent">Modifier</a>'.
-                    $btn = ' <a  data-id="'.$row->id.'" data-name="'.$row->fullName().'" data-original-title="Edit" class="btn btn-dark btn-sm absent">A?</a>';
-                    // $btn = ' <a  data-id="'.$row->id.'" data-original-title="Edit" class="btn btn-dark btn-sm moove">T?</a>';
+                    $btn = '<a href="javascript:void(0)" data-toggle="modal" data-target="#modal-update"  data-id="'.$row->id.'" data-original-title="Edit" class="btn btn-warning btn-sm editStudent">M</a>'.
+                    $btn = ' <a data-id="'.$row->id.'" data-name="'.$row->fullName().'" data-original-title="Edit" class="btn btn-dark btn-sm absent">AB?</a>'.
+                    $btn = ' <a data-id="'.$row->id.'" data-original-title="Archiver" class="btn btn-danger btn-sm archive">AC?</a>';
                     return $btn;
                 })
                 ->rawColumns(['action'])
@@ -159,7 +160,9 @@ class StudentController extends Controller
     public function absent(Request $request)
     {
         $id = $request-> id;
+        $authUserSchoolId = Auth::user()->school_id;
         $search = Student::find($id);
+        $this->addAbsent($id,$authUserSchoolId);
         if($search->email OR $search->email2){
             $this->sendEmail($search->email,$search->email2,$search->fullName());
             return response()->json([
@@ -198,6 +201,20 @@ class StudentController extends Controller
         });
     }
 
+    public function addAbsent($student_id, $school_id)
+    {
+        Absence::create([
+            'students_id' => $student_id,
+            'schools_id' => $school_id,
+        ]);
+        $search = Student::find($student_id);
+        $currentAbsence = $search->absence;
+        $absenceUpdate = $currentAbsence + 1;
+        $search -> update([
+            'absence' => $absenceUpdate,
+        ]);
+    }
+
     public function moove(Request $request)
     {
         $error_messages = [
@@ -230,6 +247,7 @@ class StudentController extends Controller
                 // update student classroom id
                 $student->update([
                     'classrooms_id' => $request->classroom,
+                    'absence' => 0,
                 ]);
             }
         }

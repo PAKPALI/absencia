@@ -17,9 +17,18 @@ class Student extends Model
         'num1',
         'num2',
         'gender',
+        'absence',
     ];
 
     public function fullName(){
         return  strtoupper($this ->last_name).' '.$this ->first_name;
+    }
+
+    public function classroom(){
+        return $this->belongsTo(Classroom::class,'classrooms_id');
+    }
+
+    public function absence(){
+        return  $this ->hasMany(Absence::class);
     }
 }

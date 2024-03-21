@@ -28,21 +28,30 @@ class UserController extends Controller
     public function dashboardAdmin()
     {
         $authUserSchoolId = Auth::user()->school_id;
-        $SchoolCount = School::all()->count();
+        // $SchoolCount = School::all()->count();
         $ClassroomCount = Classroom::where('schools_id',$authUserSchoolId)->count();
-        // $Student = Student::where('classrooms_id', $classroom_id)->get();
-        $Professor = User::where('school_id',$authUserSchoolId)->where('user_type','3');
+        $Professor = User::where('school_id',$authUserSchoolId)->where('user_type','3')->get();
         $ProfessorCount = $Professor->count();
         $ProfessorActifCount = $Professor->where('connected',1)->count();
         $ProfessorInactifCount = $Professor->where('connected',0)->count();
-        // dd($ClassroomCount);
+
+        $Student = Student::all();
+        $availableStudent=[];
+        foreach($Student as $student){
+            if($student->classroom->school->id == $authUserSchoolId){
+                array_push($availableStudent,$student);
+            }
+        }
+        $totalAvailableStudents = count($availableStudent);
+        // dd($totalAvailableStudents);
 
         return view('dashboard/dashboardAdmin',[
-            'SchoolCount' => $SchoolCount,
+            // 'SchoolCount' => $SchoolCount,
             'ProfessorCount' => $ProfessorCount,
             'ProfessorActifCount' => $ProfessorActifCount,
             'ProfessorInactifCount' => $ProfessorInactifCount,
             'ClassroomCount' => $ClassroomCount,
+            'totalAvailableStudents' => $totalAvailableStudents,
         ]);
     }
 

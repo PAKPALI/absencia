@@ -25,7 +25,7 @@
                     <div class="small-box bg-info">
                         <div class="inner">
                             <h3>Ecole</h3>
-                            <p>Nombre total: {{$SchoolCount}}</p>
+                            <p>Nombre total:</p>
                         </div>
                         <div class="icon">
                             <i class="ion ion-bag"></i>
@@ -39,10 +39,10 @@
                     <div class="small-box bg-warning">
                         <div class="inner">
                             <h3>Classe</h3>
-                            <p>Nombre total: {{$ClassroomCount}}</p>
+                            <p><strong> total: {{$ClassroomCount}}</strong></p>
                         </div>
                         <div class="icon">
-                            <i class="ion ion-person-add"></i>
+                            <i class="ion ion-stats-bars"></i>
                         </div>
                         <a href="{{route('classroom')}}" class="small-box-footer">Plus d'info <i class="fas fa-arrow-circle-right"></i></a>
                     </div>
@@ -53,10 +53,10 @@
                     <div class="small-box bg-danger">
                         <div class="inner">
                             <h3>Eleve</h3>
-                            <p>Nombre total: </p>
+                            <p><strong> total: {{$totalAvailableStudents}}</strong></p>
                         </div>
                         <div class="icon">
-                            <i class="ion ion-pie-graph"></i>
+                            <i class="ion ion-stats-bars"></i>
                         </div>
                         <a href="#" class="small-box-footer">Plus d'info <i class="fas fa-arrow-circle-right"></i></a>
                     </div>
@@ -67,9 +67,9 @@
                     <div class="small-box bg-success">
                         <div class="inner">
                             <h3>Professeurs</h3>
-                            <p>Nombre total: {{$ProfessorCount}}</p>
-                            <p>Nombre total actif: {{$ProfessorActifCount}}</p>
-                            <p>Nombre total inactif: {{$ProfessorInactifCount}}</p>
+                            <p><strong> total: {{$ProfessorCount}}</strong></p>
+                            <p><strong> total actif: {{$ProfessorActifCount}}</strong></p>
+                            <p><strong> total inactif: {{$ProfessorInactifCount}}</strong></p>
                         </div>
                         <div class="icon">
                             <i class="ion ion-stats-bars"></i>

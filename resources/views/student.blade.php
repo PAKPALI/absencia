@@ -154,8 +154,8 @@
                 </div>
 
                 <div class="card mt-5">
-                    <div class="card-header bg-primary">
-                        <h2 class="card-title">LISTE DES ETUDIANTS</h2>
+                    <div class="card-header bg-dark">
+                        <h2 class="card-title">LISTE DES ETUDIANTS ACTIFS</h2>
                     </div>
 
                     <div class="card-body">
@@ -165,7 +165,7 @@
                                     <th>N°</th>
                                     <th>Nom</th>
                                     <th>Prénom</th>
-                                    <th>Genre</th>
+                                    <th>Absence</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -176,7 +176,8 @@
                     </div>
                 </div>
 
-                <div class="card card-primary">
+                @if($Manager==1)
+                <div class="card card-info">
                     <div class="card-header">
                         <h3 class="card-title"><small>Déplacer les étudiants</small></h3>
                     </div>
@@ -215,6 +216,7 @@
                         </div>
                     </form>
                 </div>
+                @endif
             </div>
         </div>
 </section>
@@ -248,7 +250,7 @@
                 {data: 'last_name',name: 'last_name'},
                 {data: 'first_name',name: 'first_name'},
                 // {data: 'email',name: 'email'},
-                {data: 'gender',name: 'gender'},
+                {data: 'absence',name: 'absence'},
                 // {data: 'school_id',name: 'school_id'},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ],
@@ -519,7 +521,7 @@
                                     title: data.title,
                                     text: data.msg,
                                 }).then(() => {
-                                    // user_list.draw();
+                                    user_list.draw();
                                 })
                             }else{
                                 Swal.fire({
@@ -583,6 +585,50 @@
             return false;
         });
         
+        $('#archive').submit(function() {
+            event.preventDefault();
+            $('#add_loader').fadeIn();
+            $.ajax({
+                type: 'POST',
+                url: "{{route('archive')}}",
+                //enctype: 'multipart/form-data',
+                data: $('#archive').serialize(),
+                datatype: 'json',
+                success: function(data){
+                    $('#add_loader').hide();
+                    console.log(data)
+                    if (data.status) {
+                        Swal.fire({
+                            icon: "success",
+                            title: data.title,
+                            text: data.msg,
+                        }).then(() => {
+                            user_list.draw();
+                        })
+                    } else {
+                        $('#add_loader').fadeOut();
+                        Swal.fire({
+                            title: data.title,
+                            text: data.msg,
+                            icon: 'error',
+                            confirmButtonText: "D'accord",
+                            confirmButtonColor: '#A40000',
+                        })
+                    }
+                },
+                error: function(data) {
+                    console.log(data)
+                    $('#add_loader').fadeOut();
+                    Swal.fire({
+                        icon: "error",
+                        title: "erreur",
+                        text: "Impossible de communiquer avec le serveur.",
+                        timer: 3600,
+                    })
+                }
+            });
+            return false;
+        });
     });
 </script>
 
