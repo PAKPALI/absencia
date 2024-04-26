@@ -17,9 +17,24 @@
          <!--link j-query-->
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     </head>
-    <body class="hold-transition login-page">
 
-         @yield('content')
+    <style>
+        .background-image {
+            position: absolute; /* Position absolue pour que l'image se superpose à la div parente */
+            top: 0; /* Positionnement en haut de la div parente */
+            left: 0; /* Positionnement à gauche de la div parente */
+            width: 100%; /* Largeur de la div parente */
+            height: 100%; /* Hauteur de la div parente */
+            background-image: url('https://th.bing.com/th/id/R.190707a8ce0086574452dca379ae4e5e?rik=18IS36Zr6DdiVw&pid=ImgRaw&r=0'); /* Chemin vers votre image */
+            background-size: cover; /* Taille de l'image pour remplir la div parente */
+            background-position: center; /* Positionnement de l'image au centre */
+            opacity: 0.8; /* Opacité de l'image */
+        }
+    </style>
+
+    <body class="hold-transition login-page background-image">
+
+        @yield('content')
 
         <!-- jQuery -->
         <script src="{{asset('admin/plugins/jquery/jquery.min.js')}}"></script>

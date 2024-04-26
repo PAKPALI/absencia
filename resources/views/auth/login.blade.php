@@ -1,14 +1,15 @@
 @extends('auth.layouts.layoutAuth')
 @section('content')
-    <div class="login-box">
-        <div class="login-logo">
+<div class="row">
+    <div class="login-box ">
+        <div class="login-logo text-light">
             <b>ABSENCIA</b>
         </div>
         <!-- /.login-logo -->
         <div class="card">
             <div class="card-body login-card-body text-center">
                 <img class="animation__shake " src="{{asset('img/trimax.gif')}}" alt="TRIMAX_Logo" height="100" width="100">
-                <p class="login-box-msg mt-3 mb-3">SE CONNECTER</p>
+                <p class="login-box-msg mt-3 mb-3 text-dark"><strong> SE CONNECTER</strong> </p>
 
                 <form id="form-login">
                     @csrf
@@ -66,59 +67,60 @@
             <!-- /.login-card-body -->
         </div>
     </div>
+</div>
 
-    <script>
-        $(function() {
-            $('#loader').hide();
+<script>
+    $(function() {
+        $('#loader').hide();
 
-            //ajax pour se connecter
-            $('#form-login').submit(function(){
-                event.preventDefault();
-                $('#loader').fadeIn();
-                $.ajax({
-                    type: 'POST',
-                    url: 'login',
-                    //enctype: 'multipart/form-data',
-                    data: $('#form-login').serialize(),
-                    datatype: 'json',
-                    success: function (data){
-                        console.log(data)
-                        if (data.status)
-                        {
-                            Swal.fire({
-                                icon: "success",
-                                title: data.title,
-                                text: "Connection reussie!",
-                            }).then(() => {
-                                if (data.redirect_to != null){
-                                    window.location.assign(data.redirect_to)
-                                } else{
-                                }
-                            })
-                        }else{
-                            $('#loader').hide();
-                            Swal.fire({
-                                title: data.title,
-                                text:data.msg,
-                                icon: 'error',
-                                confirmButtonText: "D'accord",
-                                confirmButtonColor: 'blue',
-                            })
-                        }
-                    },
-                    error: function (data){
-                        console.log(data)
+        //ajax pour se connecter
+        $('#form-login').submit(function(){
+            event.preventDefault();
+            $('#loader').fadeIn();
+            $.ajax({
+                type: 'POST',
+                url: 'login',
+                //enctype: 'multipart/form-data',
+                data: $('#form-login').serialize(),
+                datatype: 'json',
+                success: function (data){
+                    console.log(data)
+                    if (data.status)
+                    {
+                        Swal.fire({
+                            icon: "success",
+                            title: data.title,
+                            text: "Connection reussie!",
+                        }).then(() => {
+                            if (data.redirect_to != null){
+                                window.location.assign(data.redirect_to)
+                            } else{
+                            }
+                        })
+                    }else{
                         $('#loader').hide();
                         Swal.fire({
-                            icon: "error",
-                            title: "erreur",
-                            text: "Impossible de communiquer avec le serveur.",
-                            timer: 3600,
+                            title: data.title,
+                            text:data.msg,
+                            icon: 'error',
+                            confirmButtonText: "D'accord",
+                            confirmButtonColor: 'blue',
                         })
                     }
-                });
-                return false;
+                },
+                error: function (data){
+                    console.log(data)
+                    $('#loader').hide();
+                    Swal.fire({
+                        icon: "error",
+                        title: "erreur",
+                        text: "Impossible de communiquer avec le serveur.",
+                        timer: 3600,
+                    })
+                }
             });
+            return false;
         });
-    </script>
+    });
+</script>
 @endsection
