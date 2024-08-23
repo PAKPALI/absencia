@@ -9,6 +9,7 @@ use App\Http\Controllers\BanqueController;
 use App\Http\Controllers\CaisseController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\SchoolController;
+use App\Http\Controllers\AbsenceController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\ClassroomController;
 use App\Http\Controllers\ProfessorController;
@@ -127,6 +128,19 @@ Route::prefix('student')->middleware(['auth'])->controller(StudentController::cl
     Route::post('absent', 'absent')->name('Absent');
     Route::post('moove', 'moove')->name('moove');
     Route::post('archive', 'archive')->name('archive');
+});
+
+// manage absence
+Route::prefix('absence')->middleware(['auth'])->controller(AbsenceController::class)->group(function () {
+    // Get
+    Route::get('','absence')->name('absence');
+    Route::get('view/{id}', 'view');
+
+    //post
+    Route::post('getClassroomInfoById', 'getClassroomInfoById');
+    Route::post('add', "add");
+    Route::post('update', 'update');
+    Route::post('delete', 'delete');
 });
 
 Route::post('outUser', [UserController::class, 'outUser'])->name('outUser');

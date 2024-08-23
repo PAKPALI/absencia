@@ -87,82 +87,82 @@
          <!-- manage professor -->
          <li class="nav-header"> GESTION PROFESSEUR</li>
          @if( Route::currentRouteName() == "professor")
-          <li class="nav-item">
-            <a href="#" class="nav-link active">
-              <i class="nav-icon fas fa-user"></i>
-              <p>
-                Professeur
-                <i class="fas fa-angle-left right"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="{{route('professor')}}" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Ajouter</p>
-                </a>
-              </li>
-            </ul>
-          </li>
+         <li class="nav-item">
+           <a href="#" class="nav-link active">
+             <i class="nav-icon fas fa-user"></i>
+             <p>
+               Professeur
+               <i class="fas fa-angle-left right"></i>
+             </p>
+           </a>
+           <ul class="nav nav-treeview">
+             <li class="nav-item">
+               <a href="{{route('professor')}}" class="nav-link">
+                 <i class="far fa-circle nav-icon"></i>
+                 <p>Ajouter</p>
+               </a>
+             </li>
+           </ul>
+         </li>
          @else
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-user"></i>
-              <p>
-                Professeur
-                <i class="fas fa-angle-left right"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="{{route('professor')}}" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Ajouter</p>
-                </a>
-              </li>
-            </ul>
-          </li>
+         <li class="nav-item">
+           <a href="#" class="nav-link">
+             <i class="nav-icon fas fa-user"></i>
+             <p>
+               Professeur
+               <i class="fas fa-angle-left right"></i>
+             </p>
+           </a>
+           <ul class="nav nav-treeview">
+             <li class="nav-item">
+               <a href="{{route('professor')}}" class="nav-link">
+                 <i class="far fa-circle nav-icon"></i>
+                 <p>Ajouter</p>
+               </a>
+             </li>
+           </ul>
+         </li>
          @endif
 
          <!-- manage classroom -->
          <li class="nav-header"> GESTION CLASSE</li>
-         @if( Route::currentRouteName() == "classroom")
-          <li class="nav-item">
-            <a href="#" class="nav-link active">
-              <i class="nav-icon fas fa-users"></i>
-              <p>
-                Classe
-                <i class="fas fa-angle-left right"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="{{route('classroom')}}" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Ajouter</p>
-                </a>
-              </li>
-            </ul>
-          </li>
-         @else
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-users"></i>
-              <p>
-                Classe
-                <i class="fas fa-angle-left right"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="{{route('classroom')}}" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Ajouter</p>
-                </a>
-              </li>
-            </ul>
-          </li>
-         @endif
+         <li class="nav-item">
+           <a href="#" class="nav-link @if( Route::currentRouteName() == 'classroom')active" @endif">
+             <i class="nav-icon fas fa-users"></i>
+             <p>
+               Classe
+               <i class="fas fa-angle-left right"></i>
+             </p>
+           </a>
+           <ul class="nav nav-treeview">
+             <li class="nav-item">
+               <a href="{{route('classroom')}}" class="nav-link">
+                 <i class="far fa-circle nav-icon"></i>
+                 <p>Ajouter</p>
+               </a>
+             </li>
+           </ul>
+         </li>
+
+         <!-- manage absence history-->
+         <li class="nav-header"> HISTORIQUE DES ABSENCES</li>
+         <li class="nav-item">
+           <a href="#" class="nav-link @if( Route::currentRouteName() == 'absence')active" @endif">
+             <i class="nav-icon fas fa-users"></i>
+             <p>
+               Absences
+               <i class="fas fa-angle-left right"></i>
+             </p>
+           </a>
+           <ul class="nav nav-treeview">
+             <li class="nav-item">
+               <a href="{{route('absence')}}" class="nav-link">
+                 <i class="far fa-circle nav-icon"></i>
+                 <p>Listes</p>
+               </a>
+             </li>
+           </ul>
+         </li>
        </ul>
      </nav>
      <!-- /.sidebar-menu -->

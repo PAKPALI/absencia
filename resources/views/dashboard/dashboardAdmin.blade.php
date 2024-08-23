@@ -50,7 +50,7 @@
 
                 <div class="col-lg-6 col-6">
 
-                    <div class="small-box bg-danger">
+                    <div class="small-box bg-primary">
                         <div class="inner">
                             <h3>Eleve</h3>
                             <p><strong> total: {{$totalAvailableStudents}}</strong></p>

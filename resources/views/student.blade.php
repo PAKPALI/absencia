@@ -254,7 +254,6 @@
                 // {data: 'school_id',name: 'school_id'},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ],
-
             drawCallback: function() {
                 $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
                 $('#user_list').css('width','100%');
