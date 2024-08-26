@@ -25,33 +25,35 @@
                     <div class="card-header">
                         <h3 class="card-title"><small>Historique des absences</small></h3>
                     </div>
-                    <form id="add">
+                    <form id="searchForm">
                         @csrf
                         <div class="card-body">
                             <div class="row">
                                 <div class="form-group col-12">
                                     <label>Classe</label>
-                                    <select name="manager" class="form-control">
+                                    <select id="classId" name="manager" class="form-control">
                                         <option value="">Sélectionnez la classe</option>
-                                            <option value=""></option>
+                                        @foreach ($Classroom as $class)
+                                        <option value="{{$class->id}}">{{$class->name}}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
 
                             <div class="row">
                                 <div class="form-group col-6">
-                                    <label>Date:</label>
+                                    <label>Date de début:</label>
                                     <div class="input-group date" id="reservationdate" data-target-input="nearest">
-                                        <input type="text" class="form-control datetimepicker-input" data-target="#reservationdate" />
+                                        <input id="date1" type="text" class="form-control datetimepicker-input" data-target="#reservationdate" />
                                         <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
                                             <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="form-group col-6">
-                                    <label>Date:</label>
+                                    <label>Date de fin:</label>
                                     <div class="input-group date" id="reservationdate1" data-target-input="nearest">
-                                        <input type="text" class="form-control datetimepicker-input" data-target="#reservationdate1" />
+                                        <input id="date2" type="text" class="form-control datetimepicker-input" data-target="#reservationdate1"/>
                                         <div class="input-group-append" data-target="#reservationdate1" data-toggle="datetimepicker">
                                             <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                         </div>
@@ -65,7 +67,7 @@
                             </div>
                         </div>
                         <div class="card-footer">
-                            <button type="submit" class="btn btn-dark">Valider</button>
+                            <button id="submit" type="submit" class="btn btn-dark">Valider</button>
                         </div>
                     </form>
                 </div>
@@ -109,9 +111,9 @@
             locale: 'fr'
         });
 
-        var all_client = 0;
-        var month_client = 0;
-        var year_client = 0;
+        var classId = 0;
+        var date1 = 0;
+        var date2 = 0;
 
         var class_list = $('#class_list').DataTable({
             processing: true,
@@ -160,10 +162,13 @@
                 });
 
         //Add user
-        $('#add').submit(function() {
+        $('#searchForm').submit(function() {
+            var classId = $('#classId').val();
+            var date1 = $('#date1').val();
+            var date2 = $('#date2').val();
             event.preventDefault();
             $('#add_loader').fadeIn();
-            $.ajax({
+            {{--$.ajax({
                 type: 'POST',
                 url: 'classroom/add',
                 //enctype: 'multipart/form-data',
@@ -201,7 +206,7 @@
                         timer: 3600,
                     })
                 }
-            });
+            });--}}
             return false;
         });
 
