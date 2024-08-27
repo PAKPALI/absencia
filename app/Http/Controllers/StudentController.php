@@ -162,7 +162,8 @@ class StudentController extends Controller
         $id = $request-> id;
         $authUserSchoolId = Auth::user()->school_id;
         $search = Student::find($id);
-        $this->addAbsent($id,$authUserSchoolId);
+        $classroom_id = $search -> classrooms_id;
+        $this->addAbsent($classroom_id,$id,$authUserSchoolId);
         if($search->email OR $search->email2){
             $this->sendEmail($search->email,$search->email2,$search->fullName());
             return response()->json([
@@ -201,9 +202,10 @@ class StudentController extends Controller
         });
     }
 
-    public function addAbsent($student_id, $school_id)
+    public function addAbsent($classroom_id,$student_id, $school_id)
     {
         Absence::create([
+            'classrooms_id' => $classroom_id,
             'students_id' => $student_id,
             'schools_id' => $school_id,
         ]);

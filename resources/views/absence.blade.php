@@ -67,7 +67,7 @@
                             </div>
                         </div>
                         <div class="card-footer">
-                            <button id="submit" type="submit" class="btn btn-dark">Valider</button>
+                            <button id="submit" type="button" class="btn btn-dark">Valider</button>
                         </div>
                     </form>
                 </div>
@@ -77,18 +77,18 @@
                         <h2 class="card-title">LISTE DES ABSENCES RECHERCHEES</h2>
                     </div>
                     <div class="card-body">
-                        <table id="class_list" class="table table-bordered table-striped">
+                        <table id="absence_list" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
                                     <th>N°</th>
-                                    <th>Nom</th>
-                                    <th>Responsable</th>
-                                    <th>Action</th>
+                                    <th>Classe</th>
+                                    <th>Elève</th>
+                                    <th>Date d'absence</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 
-                            </tbody>
+                            </tbody> 
                         </table>
                     </div>
                 </div>
@@ -111,28 +111,28 @@
             locale: 'fr'
         });
 
-        var classId = 0;
-        var date1 = 0;
-        var date2 = 0;
+        var classId = $('#classId').val();
+        var date1 = $('#date1').val();
+        var date2 = $('#date2').val();
 
-        var class_list = $('#class_list').DataTable({
+        var absence_list = $('#absence_list').DataTable({
             processing: true,
             serverSide: true,
             ajax: "{{ route('showListClassroom')}}",
-            {{--ajax: {
-                        url: "{{ route('clients.index') }}",
-                        data: function(d) {
-                            d.all_client = all_client
-                            d.month_client = month_client,
-                            d.year_client = year_client
-                        }
-                    },--}}
+            ajax: {
+                url: "{{ route('showListAbsence') }}",
+                data: function(d) {
+                    d.classId = classId,
+                    d.date1 = date1,
+                    d.date2 = date2
+                }
+            },
             columns: [
                 {data: 'id',name: 'id'},
-                {data: 'name',name: 'name'},
-                {data: 'manager',name: 'manager'},
-                // {data: 'created_at',name: 'created_at'},
-                {data: 'action', name: 'action', orderable: false, searchable: false},
+                {data: 'classrooms_id',name: 'classrooms_id'},
+                {data: 'students_id',name: 'students_id'},
+                {data: 'created_at',name: 'created_at'},
+                // {data: 'action', name: 'action', orderable: false, searchable: false},
             ],
 
             drawCallback: function() {
@@ -161,53 +161,14 @@
                     }
                 });
 
-        //Add user
-        $('#searchForm').submit(function() {
+        //Search absent by class and different date
+        $('#submit').click(function(e) {
+            $('#add_loader').fadeIn();
             var classId = $('#classId').val();
             var date1 = $('#date1').val();
             var date2 = $('#date2').val();
-            event.preventDefault();
-            $('#add_loader').fadeIn();
-            {{--$.ajax({
-                type: 'POST',
-                url: 'classroom/add',
-                //enctype: 'multipart/form-data',
-                data: $('#add').serialize(),
-                datatype: 'json',
-                success: function(data) {
-                    $('#add_loader').hide();
-                    console.log(data)
-                    if (data.status) {
-                        Swal.fire({
-                            icon: "success",
-                            title: data.title,
-                            text: data.msg,
-                        }).then(() => {
-                            class_list.draw();
-                        })
-                    } else {
-                        $('#add_loader').fadeOut();
-                        Swal.fire({
-                            title: data.title,
-                            text: data.msg,
-                            icon: 'error',
-                            confirmButtonText: "D'accord",
-                            confirmButtonColor: '#A40000',
-                        })
-                    }
-                },
-                error: function(data) {
-                    console.log(data)
-                    $('#add_loader').fadeOut();
-                    Swal.fire({
-                        icon: "error",
-                        title: "erreur",
-                        text: "Impossible de communiquer avec le serveur.",
-                        timer: 3600,
-                    })
-                }
-            });--}}
-            return false;
+            absence_list.draw();
+            $('#add_loader').fadeOut();
         });
 
         $('body').on('click', '.viewUser', function (e) {
