@@ -111,20 +111,15 @@
             locale: 'fr'
         });
 
-        var classId = $('#classId').val();
-        var date1 = $('#date1').val();
-        var date2 = $('#date2').val();
-
         var absence_list = $('#absence_list').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route('showListClassroom')}}",
             ajax: {
                 url: "{{ route('showListAbsence') }}",
-                data: function(d) {
-                    d.classId = classId,
-                    d.date1 = date1,
-                    d.date2 = date2
+                data: function(d){
+                    d.classId = $('#classId').val();
+                    d.date1 = $('#date1').val();
+                    d.date2 = $('#date2').val();
                 }
             },
             columns: [
@@ -134,7 +129,6 @@
                 {data: 'created_at',name: 'created_at'},
                 // {data: 'action', name: 'action', orderable: false, searchable: false},
             ],
-
             drawCallback: function() {
                 $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
                 $('#class_list').css('width','100%');

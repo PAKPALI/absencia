@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Absence;
 use App\Models\Classroom;
 use Illuminate\Http\Request;
@@ -23,10 +24,10 @@ class AbsenceController extends Controller
     public function showListAbsence(Request $request)
     {
         if ($request->ajax()) {
-            if($request->classId!==0 && $request->date1!==0 && $request->date2!==0){
+            if($request->classId && $request->date1 && $request->date2){
                 $class_id = $request->classId;
-                $date1 = $request->date1;
-                $date2 = $request->date2;
+                $date1 = Carbon::createFromFormat('d/m/Y', $request->date1)->format('Y-m-d');
+                $date2 = Carbon::createFromFormat('d/m/Y', $request->date2)->format('Y-m-d');
                 $Absences = Absence::where('classrooms_id',$class_id)->whereBetween('created_at', [$date1, $date2])->latest()->get();
             }else{
                 $Absences = Absence::where('schools_id',Auth::user()->school_id)->latest()->get();
@@ -39,7 +40,7 @@ class AbsenceController extends Controller
                     return $Absences->student->fullName();
                 })
                 ->editColumn('created_at', function ($Absences) {
-                    return $Absences->created_at->translatedFormat('d  M Y');
+                    return $Absences->created_at->format('d-m-Y H:i:s');
                 })
                 ->make(true);
         }
