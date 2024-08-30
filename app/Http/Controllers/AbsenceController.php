@@ -27,7 +27,7 @@ class AbsenceController extends Controller
             if($request->classId && $request->date1 && $request->date2){
                 $class_id = $request->classId;
                 $date1 = Carbon::createFromFormat('d/m/Y', $request->date1)->format('Y-m-d');
-                $date2 = Carbon::createFromFormat('d/m/Y', $request->date2)->format('Y-m-d');
+                $date2 = Carbon::createFromFormat('d/m/Y', $request->date2)->format('Y-m-d 23:59:59');
                 $Absences = Absence::where('classrooms_id',$class_id)->whereBetween('created_at', [$date1, $date2])->latest()->get();
             }else{
                 $Absences = Absence::where('schools_id',Auth::user()->school_id)->latest()->get();
@@ -44,5 +44,30 @@ class AbsenceController extends Controller
                 })
                 ->make(true);
         }
+    }
+
+    // pdf
+    public function generatePDF(Request $request)
+    {
+        // Convertir les dates
+        $date1 = $request->date1 ? Carbon::createFromFormat('d/m/Y', $request->date1)->format('Y-m-d') : null;
+        $date2 = $request->date2 ? Carbon::createFromFormat('d/m/Y', $request->date2)->format('Y-m-d') : null;
+
+        // Récupérer les absences filtrées
+        $query = Absence::with('classroom', 'student');
+
+        if ($request->classId) {
+            $query->where('classrooms_id', $request->classId);
+        }
+
+        if ($date1 && $date2) {
+            $query->whereBetween('created_at', [$date1, $date2]);
+        }
+
+        $absences = $query->get();
+
+        // Générer le PDF
+        $pdf = SnappyPdf::loadView('absences_pdf', compact('absences'));
+        return $pdf->download('liste_absences.pdf');
     }
 }

@@ -21,7 +21,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
-                <div class="card card-dark">
+                <div id="card" class="card card-dark">
                     <div class="card-header">
                         <h3 class="card-title"><small>Historique des absences</small></h3>
                     </div>
@@ -65,6 +65,7 @@
                                 <img class="animation__shake" src="{{asset('img/trimax.gif')}}" alt="TRIMAX_Logo"
                                     height="70" width="70">
                             </div>
+                            <div style="font-size: 20px;" class="text-danger text-center" id="error_message"></div>
                         </div>
                         <div class="card-footer">
                             <button id="submit" type="button" class="btn btn-dark">Valider</button>
@@ -73,7 +74,7 @@
                 </div>
 
                 <div class="card mt-5">
-                    <div class="card-header bg-primary">
+                    <div id="searchCard" class="card-header bg-primary">
                         <h2 class="card-title">LISTE DES ABSENCES RECHERCHEES</h2>
                     </div>
                     <div class="card-body">
@@ -101,7 +102,7 @@
 <script>
     $(function() {
         $('#loader').hide();
-        $('#loader2').hide();
+        $('#error_message').hide();
         $('#update_loader').fadeOut();
         $('#add_loader').fadeOut();
 
@@ -116,44 +117,145 @@
             serverSide: true,
             ajax: {
                 url: "{{ route('showListAbsence') }}",
-                data: function(d){
+                data: function(d) {
                     d.classId = $('#classId').val();
                     d.date1 = $('#date1').val();
                     d.date2 = $('#date2').val();
                 }
             },
             columns: [
-                {data: 'id',name: 'id'},
-                {data: 'classrooms_id',name: 'classrooms_id'},
-                {data: 'students_id',name: 'students_id'},
-                {data: 'created_at',name: 'created_at'},
-                // {data: 'action', name: 'action', orderable: false, searchable: false},
+                {data: 'id', name: 'id'},
+                {data: 'classrooms_id', name: 'classrooms_id'},
+                {data: 'students_id', name: 'students_id'},
+                {data: 'created_at', name: 'created_at'},
+            ],
+            dom: 'Bfrtip', // Place les boutons en haut du tableau
+            buttons: [
+                {
+                    extend: 'copy',
+                    text: 'Copier',
+                    title: 'Liste des Absences',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                },
+                {
+                    extend: 'excelHtml5',
+                    text: 'Excel',
+                    title: 'Liste des Absences',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    text: 'PDF',
+                    title: 'Liste des Absences',
+                    orientation: 'landscape',
+                    pageSize: 'A4',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                },
+                {
+                    extend: 'print',
+                    text: 'Imprimer',
+                    title: 'Liste des Absences',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                },
+                // {
+                //     text: 'Afficher/Masquer Colonnes',
+                //     action: function(e, dt, node, config) {
+                //         var columnDropdown = $('<div class="dropdown-menu"></div>');
+                        
+                //         dt.columns().every(function() {
+                //             var column = this;
+                //             var columnIndex = column.index();
+
+                //             var columnItem = $('<a class="dropdown-item"></a>')
+                //                 .text(column.header().innerText)
+                //                 .on('click', function(e) {
+                //                     e.preventDefault();
+                //                     column.visible(!column.visible());
+                //                 });
+
+                //             // Ajouter une classe active si la colonne est visible
+                //             if (column.visible()) {
+                //                 columnItem.addClass('active');
+                //             }
+
+                //             columnDropdown.append(columnItem);
+                //         });
+
+                //         // Affiche le dropdown à l'endroit du clic
+                //         columnDropdown.css({
+                //             position: 'absolute',
+                //             top: e.pageY,
+                //             left: e.pageX,
+                //             display: 'block',
+                //             'z-index': 1000
+                //         }).appendTo('body').on('mouseleave', function() {
+                //             $(this).remove(); // Retire le dropdown après utilisation
+                //         });
+                //     }
+                // }
             ],
             drawCallback: function() {
                 $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
                 $('#class_list').css('width','100%');
-            },
+            }
         });
 
-        $('#monthClient').click(function(e) {
-                    if ($(this).children().attr('class') == "card-body info-box info-box-cursor selected") {
-                        $('.selected').removeClass('selected');
-                        $(this).children().attr('id', 'card_change_color');
-                        month_client = 0;
-                        all_client = 1;
-                        year_client = 0;
-                        permission_table.draw();
-                    } else {
-                        $('.selected').attr('id', 'card_change_color');
-                        $('.selected').removeClass('selected');
-                        $(this).children().addClass('selected');
-                        $(this).children().removeAttr("id");
-                        month_client = 1;
-                        year_client = 0;
-                        all_client = 0;
-                        permission_table.draw();
-                    }
-                });
+        // Bouton pour basculer la visibilité de la colonne classrooms_id (index 1)
+        $('#toggleClassroom').on('click', function() {
+            var column = absence_list.column(1); // Index de la colonne
+            column.visible(!column.visible()); // Bascule la visibilité
+        });
+
+        // Bouton pour basculer la visibilité de la colonne students_id (index 2)
+        $('#toggleStudent').on('click', function() {
+            var column = absence_list.column(2); // Index de la colonne
+            column.visible(!column.visible()); // Bascule la visibilité
+        });
+
+        function deleteClass(){
+            // delete different class
+            $('#card').removeClass('card-dark');
+            $('#submit').removeClass('btn-dark');
+            $('#searchCard').removeClass('bg-primary');
+            $('#card').removeClass('card-danger');
+            $('#submit').removeClass('btn-danger');
+            $('#searchCard').removeClass('bg-danger');
+            $('#card').removeClass('card-success');
+            $('#submit').removeClass('btn-success');
+            $('#searchCard').removeClass('bg-success');
+        }
+
+        function addClassError(){
+            // add different class
+            $('#card').addClass('card-danger');
+            $('#submit').addClass('btn-danger');
+            $('#searchCard').addClass('bg-danger');
+        }
+
+        function addClassSuccess(){
+            // add different class
+            $('#card').addClass('card-success');
+            $('#submit').addClass('btn-success');
+            $('#searchCard').addClass('bg-success');
+        }
+
+        function visualError(){
+            deleteClass()
+            addClassError()
+        }
+
+        function visualSuccess(){
+            deleteClass()
+            addClassSuccess()
+        }
 
         //Search absent by class and different date
         $('#submit').click(function(e) {
@@ -161,8 +263,25 @@
             var classId = $('#classId').val();
             var date1 = $('#date1').val();
             var date2 = $('#date2').val();
-            absence_list.draw();
-            $('#add_loader').fadeOut();
+            if(classId){
+                if(date1>date2){
+                    visualError()
+                    // // show  error message 
+                    $('#add_loader').fadeOut();
+                    $('#error_message').text('La date de début doit etre inférieure a la date de fin');
+                    $('#error_message').show();
+                    $('#error_message').fadeOut(10000);
+                }
+                visualSuccess()
+                absence_list.draw();
+                $('#add_loader').fadeOut();
+            }else{
+                visualError()
+                $('#add_loader').fadeOut();
+                $('#error_message').text('Veuillez choisir une classe');
+                $('#error_message').show();
+                $('#error_message').fadeOut(10000);
+            }
         });
 
         $('body').on('click', '.viewUser', function (e) {

@@ -50,6 +50,12 @@
         #clignotant {
             animation: clignotement 3s infinite;
         }
+
+        .dropdown-item.active {
+            font-weight: bold;
+            background-color: #000339;
+        }
+
     </style>
 
 </head>
