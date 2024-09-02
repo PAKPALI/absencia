@@ -210,6 +210,7 @@
                 // {data: 'created_at',name: 'created_at'},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ],
+            
             drawCallback: function() {
                 $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
                 $('#user_list').css('width','100%');

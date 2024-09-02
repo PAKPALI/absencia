@@ -18,6 +18,7 @@ class Student extends Model
         'num2',
         'gender',
         'absence',
+        'status',
     ];
 
     public function fullName(){

@@ -17,15 +17,15 @@ class StudentController extends Controller
     public function showListStudent($classroom_id)
     {
         // composer require yajra/laravel-datatables-oracle
-        $Student = Student::where('classrooms_id', $classroom_id)->get();
+        $Student = Student::where('classrooms_id', $classroom_id)->where('status',true)->get();
         if(request()->ajax()){
             // $Student = Student::all();
             return DataTables::of($Student)
                 ->addIndexColumn()
                 ->addColumn('action', function($row){
                     $btn = '<a href="javascript:void(0)" data-toggle="modal" data-target="#modal-update"  data-id="'.$row->id.'" data-original-title="Edit" class="btn btn-warning btn-sm editStudent">M</a>'.
-                    $btn = ' <a data-id="'.$row->id.'" data-name="'.$row->fullName().'" data-original-title="Edit" class="btn btn-dark btn-sm absent">AB?</a>'.
-                    $btn = ' <a data-id="'.$row->id.'" data-original-title="Archiver" class="btn btn-danger btn-sm archive">AC?</a>';
+                    $btn = ' <a data-id="'.$row->id.'" data-name="'.$row->fullName().'" data-original-title="Absent?" class="btn btn-dark btn-sm absent">AB?</a>'.
+                    $btn = ' <a data-id="'.$row->id.'" data-name="'.$row->fullName().'" data-original-title="Archiver?" class="btn btn-danger btn-sm archive">AC?</a>';
                     return $btn;
                 })
                 ->rawColumns(['action'])
@@ -233,7 +233,7 @@ class StudentController extends Controller
             return response()->json([
                 "status" => false,
                 "reload" => false,
-                "title" => "TRANSFERT ERRONE".$request-> student."f",
+                "title" => "TRANSFERT ERRONE",
                 "msg" => $validator->errors()->first()
             ]);
 
@@ -262,4 +262,20 @@ class StudentController extends Controller
         ]);
     }
 
+    public function archive(Request $request)
+    {
+        $student_id = $request-> id;
+
+        $search = Student::find($student_id);
+        $search -> update([
+            'status' => false,
+        ]);
+        return response()->json([
+            "status" => true,
+            "reload" => true,
+            // "redirect_to" => route('user'),
+            "title" => "ARCHIVAGE REUSSI",
+            "msg" => ""
+        ]);
+    }
 }

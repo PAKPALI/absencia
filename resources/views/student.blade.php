@@ -254,6 +254,79 @@
                 // {data: 'school_id',name: 'school_id'},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ],
+            dom: 'Bfrtip', // Place les boutons en haut du tableau
+            buttons: [
+                {
+                    extend: 'copy',
+                    text: 'Copier',
+                    title: 'Liste des étudiants',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                },
+                {
+                    extend: 'excelHtml5',
+                    text: 'Excel',
+                    title: 'Liste des étudiants',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    text: 'PDF',
+                    title: 'Liste des étudiants',
+                    orientation: 'landscape',
+                    pageSize: 'A4',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                },
+                {
+                    extend: 'print',
+                    text: 'Imprimer',
+                    title: 'Liste des étudiants',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                },
+                {
+                    text: 'Masquer Colonnes',
+                    action: function(e, dt, node, config) {
+                        var columnDropdown = $('<div class="dropdown-menu"></div>');
+                        
+                        dt.columns().every(function() {
+                            var column = this;
+                            var columnIndex = column.index();
+
+                            var columnItem = $('<a class="dropdown-item"></a>')
+                                .text(column.header().innerText)
+                                .on('click', function(e) {
+                                    e.preventDefault();
+                                    column.visible(!column.visible());
+                                });
+
+                            // Ajouter une classe active si la colonne est visible
+                            if (column.visible()) {
+                                columnItem.addClass('active');
+                            }
+
+                            columnDropdown.append(columnItem);
+                        });
+
+                        // Affiche le dropdown à l'endroit du clic
+                        columnDropdown.css({
+                            position: 'absolute',
+                            top: e.pageY,
+                            left: e.pageX,
+                            display: 'block',
+                            'z-index': 1000
+                        }).appendTo('body').on('mouseleave', function() {
+                            $(this).remove(); // Retire le dropdown après utilisation
+                        });
+                    }
+                }
+            ],
             drawCallback: function() {
                 $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
                 $('#user_list').css('width','100%');
@@ -282,6 +355,7 @@
                             text: data.msg,
                         }).then(() => {
                             user_list.draw();
+                            location.reload();
                         })
                     } else {
                         $('#add_loader').fadeOut();
@@ -584,48 +658,56 @@
             return false;
         });
         
-        $('#archive').submit(function() {
+        $('body').on('click', '.archive', function () {
             event.preventDefault();
             $('#add_loader').fadeIn();
-            $.ajax({
-                type: 'POST',
-                url: "{{route('archive')}}",
-                //enctype: 'multipart/form-data',
-                data: $('#archive').serialize(),
-                datatype: 'json',
-                success: function(data){
-                    $('#add_loader').hide();
-                    console.log(data)
-                    if (data.status) {
-                        Swal.fire({
-                            icon: "success",
-                            title: data.title,
-                            text: data.msg,
-                        }).then(() => {
-                            user_list.draw();
-                        })
-                    } else {
-                        $('#add_loader').fadeOut();
-                        Swal.fire({
-                            title: data.title,
-                            text: data.msg,
-                            icon: 'error',
-                            confirmButtonText: "D'accord",
-                            confirmButtonColor: '#A40000',
-                        })
-                    }
-                },
-                error: function(data) {
-                    console.log(data)
-                    $('#add_loader').fadeOut();
-                    Swal.fire({
-                        icon: "error",
-                        title: "erreur",
-                        text: "Impossible de communiquer avec le serveur.",
-                        timer: 3600,
-                    })
+            var csrfToken = $('meta[name="csrf-token"]').attr('content');
+            var id = $(this).data("id");
+            var name = $(this).data("name");
+            
+            Swal.fire({
+                icon: "question",
+                title: " Voulez vous archiver l'élève "+name+" ?",
+                // text: " Les éléments liés a la ville seront supprimés ; la confirmation est irréversible",
+                confirmButtonText: "Oui",
+                confirmButtonColor: 'red',
+                showCancelButton: true,
+                cancelButtonText: "Non",
+                cancelButtonColor: 'blue',
+            }).then((result) => {
+                if (result.isConfirmed){
+                    // $('#card-mail').fadeIn();
+                    $.ajax({
+                        headers: {'X-CSRF-TOKEN': csrfToken},
+                        type: "post",
+                        url: "{{route('archive')}}",
+                        data: {id: id},
+                        datatype: 'json',
+                        success: function (data) {
+                            if(data.status){
+                                Swal.fire({
+                                    icon: "success",
+                                    title: data.title,
+                                    text: data.msg,
+                                }).then(() => {
+                                    user_list.draw();
+                                    location.reload()
+                                })
+                            }else{
+                                Swal.fire({
+                                    icon: "error",
+                                    title: data.title,
+                                    text: data.msg,
+                                })
+                            }
+                        },
+                        error: function (data) {
+                            console.log('Error:', data);
+                        }
+                    });
+                    // $('#card-mail').fadeOut(5000);
                 }
-            });
+            })
             return false;
         });
     });

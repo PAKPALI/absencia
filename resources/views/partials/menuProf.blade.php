@@ -141,6 +141,26 @@
             @endforeach
             </li>
           @endif
+
+          <!-- manage absence history-->
+         <li class="nav-header"> HISTORIQUE DES ABSENCES</li>
+         <li class="nav-item">
+           <a href="#" class="nav-link @if( Route::currentRouteName() == 'absence')active" @endif">
+             <i class="nav-icon fas fa-users"></i>
+             <p>
+               Absences
+               <i class="fas fa-angle-left right"></i>
+             </p>
+           </a>
+           <ul class="nav nav-treeview">
+             <li class="nav-item">
+               <a href="{{route('absence')}}" class="nav-link">
+                 <i class="far fa-circle nav-icon"></i>
+                 <p>Listes</p>
+               </a>
+             </li>
+           </ul>
+         </li>
         @endif
        </ul>
      </nav>

@@ -230,12 +230,10 @@
         });
 
         $(document).on('click','.editUser',function(e){
-        var modalHeader = $("#modal-header-edit");
-        modalHeader.attr("class", "modal-header bg-success text-light");
-
-        e.preventDefault();
-        
-    });
+            var modalHeader = $("#modal-header-edit");
+            modalHeader.attr("class", "modal-header bg-success text-light");
+            e.preventDefault();
+        });
 
         $('#updateUser').submit(function(){
             event.preventDefault();

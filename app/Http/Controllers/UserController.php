@@ -35,7 +35,7 @@ class UserController extends Controller
         $ProfessorActifCount = $Professor->where('connected',1)->count();
         $ProfessorInactifCount = $Professor->where('connected',0)->count();
 
-        $Student = Student::all();
+        $Student = Student::where('status',true)->get();
         $availableStudent=[];
         foreach($Student as $student){
             if($student->classroom->school->id == $authUserSchoolId){

@@ -23,7 +23,7 @@
             <div class="col-md-12">
                 <div id="card" class="card card-dark">
                     <div class="card-header">
-                        <h3 class="card-title"><small>Historique des absences</small></h3>
+                        <h3 class="card-title"><small>Recherche des absents</small></h3>
                     </div>
                     <form id="searchForm">
                         @csrf
@@ -36,6 +36,9 @@
                                         @foreach ($Classroom as $class)
                                         <option value="{{$class->id}}">{{$class->name}}</option>
                                         @endforeach
+                                        @if(Auth::user()->user_type ==3)
+                                            <option value="{{$class->id}}" selected>{{$class->name}}</option>
+                                        @endif
                                     </select>
                                 </div>
                             </div>
@@ -165,42 +168,42 @@
                         columns: ':visible'
                     }
                 },
-                // {
-                //     text: 'Afficher/Masquer Colonnes',
-                //     action: function(e, dt, node, config) {
-                //         var columnDropdown = $('<div class="dropdown-menu"></div>');
+                {
+                    text: 'Afficher/Masquer Colonnes',
+                    action: function(e, dt, node, config) {
+                        var columnDropdown = $('<div class="dropdown-menu"></div>');
                         
-                //         dt.columns().every(function() {
-                //             var column = this;
-                //             var columnIndex = column.index();
+                        dt.columns().every(function() {
+                            var column = this;
+                            var columnIndex = column.index();
 
-                //             var columnItem = $('<a class="dropdown-item"></a>')
-                //                 .text(column.header().innerText)
-                //                 .on('click', function(e) {
-                //                     e.preventDefault();
-                //                     column.visible(!column.visible());
-                //                 });
+                            var columnItem = $('<a class="dropdown-item"></a>')
+                                .text(column.header().innerText)
+                                .on('click', function(e) {
+                                    e.preventDefault();
+                                    column.visible(!column.visible());
+                                });
 
-                //             // Ajouter une classe active si la colonne est visible
-                //             if (column.visible()) {
-                //                 columnItem.addClass('active');
-                //             }
+                            // Ajouter une classe active si la colonne est visible
+                            if (column.visible()) {
+                                columnItem.addClass('active');
+                            }
 
-                //             columnDropdown.append(columnItem);
-                //         });
+                            columnDropdown.append(columnItem);
+                        });
 
-                //         // Affiche le dropdown à l'endroit du clic
-                //         columnDropdown.css({
-                //             position: 'absolute',
-                //             top: e.pageY,
-                //             left: e.pageX,
-                //             display: 'block',
-                //             'z-index': 1000
-                //         }).appendTo('body').on('mouseleave', function() {
-                //             $(this).remove(); // Retire le dropdown après utilisation
-                //         });
-                //     }
-                // }
+                        // Affiche le dropdown à l'endroit du clic
+                        columnDropdown.css({
+                            position: 'absolute',
+                            top: e.pageY,
+                            left: e.pageX,
+                            display: 'block',
+                            'z-index': 1000
+                        }).appendTo('body').on('mouseleave', function() {
+                            $(this).remove(); // Retire le dropdown après utilisation
+                        });
+                    }
+                }
             ],
             drawCallback: function() {
                 $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
@@ -220,8 +223,8 @@
             column.visible(!column.visible()); // Bascule la visibilité
         });
 
+        // delete different class
         function deleteClass(){
-            // delete different class
             $('#card').removeClass('card-dark');
             $('#submit').removeClass('btn-dark');
             $('#searchCard').removeClass('bg-primary');
@@ -233,15 +236,15 @@
             $('#searchCard').removeClass('bg-success');
         }
 
+        // add different error class
         function addClassError(){
-            // add different class
             $('#card').addClass('card-danger');
             $('#submit').addClass('btn-danger');
             $('#searchCard').addClass('bg-danger');
         }
 
+        // add different success class
         function addClassSuccess(){
-            // add different class
             $('#card').addClass('card-success');
             $('#submit').addClass('btn-success');
             $('#searchCard').addClass('bg-success');
@@ -266,9 +269,9 @@
             if(classId){
                 if(date1>date2){
                     visualError()
-                    // // show  error message 
+                    // show  error message 
                     $('#add_loader').fadeOut();
-                    $('#error_message').text('La date de début doit etre inférieure a la date de fin');
+                    $('#error_message').text('La date de début doit etre inférieure a la date de fin !');
                     $('#error_message').show();
                     $('#error_message').fadeOut(10000);
                 }
@@ -278,7 +281,7 @@
             }else{
                 visualError()
                 $('#add_loader').fadeOut();
-                $('#error_message').text('Veuillez choisir une classe');
+                $('#error_message').text('Veuillez choisir une classe !');
                 $('#error_message').show();
                 $('#error_message').fadeOut(10000);
             }
