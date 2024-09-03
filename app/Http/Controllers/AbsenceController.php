@@ -16,8 +16,14 @@ class AbsenceController extends Controller
     public function absence(Request $request)
     {
         $Classroom = Classroom::where('schools_id', Auth::user()->school_id)->get();
+        $userId = Auth::user()->id;
+
+        $classroomManager = Classroom::where('manager', $userId)->first();
+        $classroomProfessor = Classroom::whereRaw("FIND_IN_SET($userId, professor)")->get();
         return view('absence',[
             'Classroom' => $Classroom,
+            'classroomManager' => $classroomManager,
+            'classroomProfessor' => $classroomProfessor,
         ]);
     }
 
@@ -44,30 +50,5 @@ class AbsenceController extends Controller
                 })
                 ->make(true);
         }
-    }
-
-    // pdf
-    public function generatePDF(Request $request)
-    {
-        // Convertir les dates
-        $date1 = $request->date1 ? Carbon::createFromFormat('d/m/Y', $request->date1)->format('Y-m-d') : null;
-        $date2 = $request->date2 ? Carbon::createFromFormat('d/m/Y', $request->date2)->format('Y-m-d') : null;
-
-        // Récupérer les absences filtrées
-        $query = Absence::with('classroom', 'student');
-
-        if ($request->classId) {
-            $query->where('classrooms_id', $request->classId);
-        }
-
-        if ($date1 && $date2) {
-            $query->whereBetween('created_at', [$date1, $date2]);
-        }
-
-        $absences = $query->get();
-
-        // Générer le PDF
-        $pdf = SnappyPdf::loadView('absences_pdf', compact('absences'));
-        return $pdf->download('liste_absences.pdf');
     }
 }

@@ -32,12 +32,14 @@
                                 <div class="form-group col-12">
                                     <label>Classe</label>
                                     <select id="classId" name="manager" class="form-control">
-                                        <option value="">Sélectionnez la classe</option>
-                                        @foreach ($Classroom as $class)
-                                        <option value="{{$class->id}}">{{$class->name}}</option>
-                                        @endforeach
-                                        @if(Auth::user()->user_type ==3)
-                                            <option value="{{$class->id}}" selected>{{$class->name}}</option>
+                                        <option value="" selected>Sélectionnez la classe</option>
+                                        @if($classroomManager)
+                                            <option value="{{$classroomManager->id}}" >{{$classroomManager->name}}</option>
+                                        @endif
+                                        @if($classroomProfessor)
+                                            @foreach ($classroomProfessor as $class)
+                                                <option value="{{$class->id}}">{{$class->name}}</option>
+                                            @endforeach
                                         @endif
                                     </select>
                                 </div>
