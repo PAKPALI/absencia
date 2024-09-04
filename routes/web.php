@@ -86,6 +86,7 @@ Route::prefix('school')->middleware(['auth'])->controller(SchoolController::clas
 // manage professor
 Route::prefix('professor')->middleware(['auth'])->controller(ProfessorController::class)->group(function () {
     // Get
+    Route::get('accueil', 'dashboardProf')->name('dashboardProf');
     Route::get('', 'professor')->name('professor');
     Route::get('showListProfessor', 'showListProfessor')->name('showListProfessor');
     // Route::get('showListStudent', 'showListStudent')->name('showListStudent');

@@ -118,7 +118,7 @@ class LoginController extends Controller
                             return response()->json([
                                 "status" => true,
                                 "reload" => true,
-                                "redirect_to" => route('tableau'),
+                                "redirect_to" => route('dashboardProf'),
                                 "title" => "CONNEXION REUSSIE",
                                 'check' => Auth::check(),
                                 "msg" => "connexion réussie"

@@ -269,6 +269,7 @@ class StudentController extends Controller
         $search = Student::find($student_id);
         $search -> update([
             'status' => false,
+            'absence' => 0,
         ]);
         return response()->json([
             "status" => true,

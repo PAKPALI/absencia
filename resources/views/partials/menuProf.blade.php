@@ -32,9 +32,9 @@
        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
          <!-- Add icons to the links using the .nav-icon class
                 with font-awesome or any other icon font library -->
-         @if( Route::currentRouteName() == "tableau")
+         @if( Route::currentRouteName() == "dashboardProf")
          <li class="nav-item menu">
-           <a href="{{route('tableau')}}" class="nav-link active">
+           <a href="{{route('dashboardProf')}}" class="nav-link active">
              <i class="nav-icon fas fa-tachometer-alt"></i>
              <p>
                Tableau de bord
@@ -43,7 +43,7 @@
          </li>
          @else
          <li class="nav-item menu">
-           <a href="{{route('tableau')}}" class="nav-link">
+           <a href="{{route('dashboardProf')}}" class="nav-link">
              <i class="nav-icon fas fa-tachometer-alt"></i>
              <p>
                Tableau de bord

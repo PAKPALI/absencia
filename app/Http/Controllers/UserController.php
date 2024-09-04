@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Pays;
 use App\Models\User;
 use App\Models\School;
+use App\Models\Absence;
 use App\Models\Student;
 use App\Models\Classroom;
 use Illuminate\Http\Request;
@@ -43,10 +44,11 @@ class UserController extends Controller
             }
         }
         $totalAvailableStudents = count($availableStudent);
+        $Absences = Absence::all();
         // dd($totalAvailableStudents);
 
         return view('dashboard/dashboardAdmin',[
-            // 'SchoolCount' => $SchoolCount,
+            'Absences' => $Absences,
             'ProfessorCount' => $ProfessorCount,
             'ProfessorActifCount' => $ProfessorActifCount,
             'ProfessorInactifCount' => $ProfessorInactifCount,

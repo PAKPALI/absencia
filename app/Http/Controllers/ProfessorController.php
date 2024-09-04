@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\School;
+use App\Models\Absence;
 use App\Models\Student;
 use App\Models\Classroom;
 use App\Models\Professor;
@@ -19,6 +20,24 @@ class ProfessorController extends Controller
     public function professor()
     {
         return view('professor');
+    }
+
+    public function dashboardProf()
+    {
+        $userId = Auth::user()->id;
+        $Absences = Absence::all();
+
+        $Classroom = Classroom::where('manager', $userId)
+            ->orWhereRaw("FIND_IN_SET(?, professor)", [$userId])
+            ->withCount(['students' => function ($query) {
+                $query->where('status', true);
+            }])
+            ->get();
+        return view('dashboard/dashboardProf',[
+            'Absences' => $Absences,
+            'Classroom' => $Classroom,
+        ]);
+        // return view('');
     }
 
     public function showListProfessor(Request $request)
@@ -57,23 +76,6 @@ class ProfessorController extends Controller
                 ->make(true);
         }
     }
-    // public function showListStudent()
-    // {
-    //     // composer require yajra/laravel-datatables-oracle
-    //     if(request()->ajax()){
-    //         $Classroom = Classroom::where('manager', Auth::user()->id);
-    //         // $Student = Student::where('classrooms_id', $Classroom->id);
-    //         $Student = Student::all();
-    //         return DataTables::of($Student)
-    //             ->addIndexColumn()
-    //             ->addColumn('action', function($row){
-    //                 $btn = '<a href="javascript:void(0)" data-toggle="modal" data-target="#modal-update"  data-id="'.$row->id.'" data-original-title="Edit" class="btn btn-warning btn-sm editUser">Modifier</a>';
-    //                 return $btn;
-    //             })
-    //             ->rawColumns(['action'])
-    //             ->make(true);
-    //     }
-    // }
     
     public function add(Request $request)
     {
