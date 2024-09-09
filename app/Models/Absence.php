@@ -13,6 +13,7 @@ class Absence extends Model
         'classrooms_id',
         'students_id',
         'schools_id',
+        'professor_id',
     ];
 
     public function classroom(){
@@ -21,5 +22,10 @@ class Absence extends Model
 
     public function student(){
         return $this->belongsTo(Student::class,'students_id');
+    }
+
+    public function professor()
+    {
+        return $this->belongsTo(User::class, 'professor_id', 'id');
     }
 }

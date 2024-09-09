@@ -18,7 +18,6 @@
 
     <section class="content">
         <div class="container-fluid">
-
             <div class="row">
                 <!-- <div class="col-lg-3 col-6">
 
@@ -35,7 +34,6 @@
                 </div> -->
 
                 <div class="col-lg-4 col-4">
-
                     <div class="small-box bg-primary">
                         <div class="inner">
                             <h3>Classe</h3>
@@ -70,7 +68,7 @@
                         <div class="icon">
                             <i class="ion ion-stats-bars"></i>
                         </div>
-                        <a href="{{route('professor')}}" class="small-box-footer">Plus d'info <i class="fas fa-arrow-circle-right"></i></a>
+                        <a href="{{route('absence')}}" class="small-box-footer">Plus d'info <i class="fas fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
 
@@ -89,6 +87,146 @@
                     </div>
                 </div>
             </div>
+
+            <!-- second row -->
+            <div class="row">
+                <div class="col-lg-12 col-12">
+                    <div class="card mt-5">
+                        <div id="searchCard" class="card-header bg-dark">
+                            <h2 class="card-title">LISTE DES ABSENCES AUJOURD'HUI ({{$AbsencesToday->count()}})</h2>
+                        </div>
+                        <div class="card-body">
+                            <table id="absence_list" class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>N°</th>
+                                        <th>Classe</th>
+                                        <th>Elève</th>
+                                        <th>Matière</th>
+                                        <th>Date d'absence</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    
+                                </tbody> 
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
+    <script>
+    $(function() {
+        var absence_list = $('#absence_list').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: "{{ route('showListAbsenceToday') }}",
+                data: function(d) {
+                    d.classId = $('#classId').val();
+                    d.date1 = $('#date1').val();
+                    d.date2 = $('#date2').val();
+                }
+            },
+            columns: [
+                {data: 'id', name: 'id'},
+                {data: 'classrooms_id', name: 'classrooms_id'},
+                {data: 'students_id', name: 'students_id'},
+                {data: 'professor_id', name: 'professor_id'},
+                {data: 'created_at', name: 'created_at'},
+            ],
+            dom: 'Bfrtip', // Place les boutons en haut du tableau
+            buttons: [
+                {
+                    extend: 'copy',
+                    text: 'Copier',
+                    title: 'Liste des Absences',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                },
+                {
+                    extend: 'excelHtml5',
+                    text: 'Excel',
+                    title: 'Liste des Absences',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    text: 'PDF',
+                    title: 'Liste des Absences',
+                    orientation: 'landscape',
+                    pageSize: 'A4',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                },
+                {
+                    extend: 'print',
+                    text: 'Imprimer',
+                    title: 'Liste des Absences',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                },
+                {
+                    text: 'Afficher/Masquer Colonnes',
+                    action: function(e, dt, node, config) {
+                        var columnDropdown = $('<div class="dropdown-menu"></div>');
+                        
+                        dt.columns().every(function() {
+                            var column = this;
+                            var columnIndex = column.index();
+
+                            var columnItem = $('<a class="dropdown-item"></a>')
+                                .text(column.header().innerText)
+                                .on('click', function(e) {
+                                    e.preventDefault();
+                                    column.visible(!column.visible());
+                                });
+
+                            // Ajouter une classe active si la colonne est visible
+                            if (column.visible()) {
+                                columnItem.addClass('active');
+                            }
+
+                            columnDropdown.append(columnItem);
+                        });
+
+                        // Affiche le dropdown à l'endroit du clic
+                        columnDropdown.css({
+                            position: 'absolute',
+                            top: e.pageY,
+                            left: e.pageX,
+                            display: 'block',
+                            'z-index': 1000
+                        }).appendTo('body').on('mouseleave', function() {
+                            $(this).remove(); // Retire le dropdown après utilisation
+                        });
+                    }
+                }
+            ],
+            drawCallback: function() {
+                $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
+                $('#class_list').css('width','100%');
+            }
+        });
+
+        // Bouton pour basculer la visibilité de la colonne classrooms_id (index 1)
+        $('#toggleClassroom').on('click', function() {
+            var column = absence_list.column(1); // Index de la colonne
+            column.visible(!column.visible()); // Bascule la visibilité
+        });
+
+        // Bouton pour basculer la visibilité de la colonne students_id (index 2)
+        $('#toggleStudent').on('click', function() {
+            var column = absence_list.column(2); // Index de la colonne
+            column.visible(!column.visible()); // Bascule la visibilité
+        });
+
+    });
+</script>
 @endsection

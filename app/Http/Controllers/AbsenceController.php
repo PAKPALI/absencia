@@ -45,6 +45,30 @@ class AbsenceController extends Controller
                 ->editColumn('students_id', function ($Absences) {
                     return $Absences->student->fullName();
                 })
+                ->editColumn('professor_id', function ($Absences) {
+                    return $Absences->professor ? $Absences->professor->subject:'-';
+                })
+                ->editColumn('created_at', function ($Absences) {
+                    return $Absences->created_at->format('d-m-Y H:i:s');
+                })
+                ->make(true);
+        }
+    }
+
+    public function showListAbsenceToday(Request $request)
+    {
+        if ($request->ajax()) {
+            $Absences = Absence::where('schools_id',Auth::user()->school_id)->whereDate('created_at', Carbon::today())->latest()->get();
+            return DataTables::of($Absences)
+                ->editColumn('classrooms_id', function ($Absences) {
+                    return $Absences->classroom->name;
+                })
+                ->editColumn('students_id', function ($Absences) {
+                    return $Absences->student->fullName();
+                })
+                ->editColumn('professor_id', function ($Absences) {
+                    return $Absences->professor ? $Absences->professor->subject:'-';
+                })
                 ->editColumn('created_at', function ($Absences) {
                     return $Absences->created_at->format('d-m-Y H:i:s');
                 })

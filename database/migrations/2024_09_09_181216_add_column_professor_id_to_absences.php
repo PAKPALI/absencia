@@ -13,8 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('students', function (Blueprint $table) {
-            $table->boolean('status')->default(true);
+        Schema::table('absences', function (Blueprint $table) {
+            $table ->string('professor_id')->after('schools_id')->nullable();
         });
     }
 
@@ -25,8 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('students', function (Blueprint $table) {
-            $table->dropColumn('status');
+        Schema::table('absences', function (Blueprint $table) {
+            $table->dropColumn('professor_id');
         });
     }
 };

@@ -208,6 +208,7 @@ class StudentController extends Controller
             'classrooms_id' => $classroom_id,
             'students_id' => $student_id,
             'schools_id' => $school_id,
+            'professor_id' => Auth::user()->id,
         ]);
         $search = Student::find($student_id);
         $currentAbsence = $search->absence;

@@ -33,11 +33,17 @@
                                     <label>Classe</label>
                                     <select id="classId" name="manager" class="form-control">
                                         <option value="" selected>Sélectionnez la classe</option>
-                                        @if($classroomManager)
-                                            <option value="{{$classroomManager->id}}" >{{$classroomManager->name}}</option>
-                                        @endif
-                                        @if($classroomProfessor)
-                                            @foreach ($classroomProfessor as $class)
+                                        @if(Auth::user()->user_type==3)
+                                            @if($classroomManager)
+                                                <option value="{{$classroomManager->id}}" >{{$classroomManager->name}}</option>
+                                            @endif
+                                            @if($classroomProfessor)
+                                                @foreach ($classroomProfessor as $class)
+                                                    <option value="{{$class->id}}">{{$class->name}}</option>
+                                                @endforeach
+                                            @endif
+                                        @else
+                                            @foreach ($Classroom as $class)
                                                 <option value="{{$class->id}}">{{$class->name}}</option>
                                             @endforeach
                                         @endif
@@ -89,6 +95,7 @@
                                     <th>N°</th>
                                     <th>Classe</th>
                                     <th>Elève</th>
+                                    <th>Matière</th>
                                     <th>Date d'absence</th>
                                 </tr>
                             </thead>
@@ -132,6 +139,7 @@
                 {data: 'id', name: 'id'},
                 {data: 'classrooms_id', name: 'classrooms_id'},
                 {data: 'students_id', name: 'students_id'},
+                {data: 'professor_id', name: 'professor_id'},
                 {data: 'created_at', name: 'created_at'},
             ],
             dom: 'Bfrtip', // Place les boutons en haut du tableau

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Pays;
 use App\Models\User;
 use App\Models\School;
@@ -35,6 +36,7 @@ class UserController extends Controller
         $ProfessorCount = $Professor->count();
         $ProfessorActifCount = $Professor->where('connected',1)->count();
         $ProfessorInactifCount = $Professor->where('connected',0)->count();
+        $AbsencesToday = Absence::where('schools_id',Auth::user()->school_id)->whereDate('created_at', Carbon::today())->latest()->get();
 
         $Student = Student::where('status',true)->get();
         $availableStudent=[];
@@ -48,6 +50,7 @@ class UserController extends Controller
         // dd($totalAvailableStudents);
 
         return view('dashboard/dashboardAdmin',[
+            'AbsencesToday' => $AbsencesToday,
             'Absences' => $Absences,
             'ProfessorCount' => $ProfessorCount,
             'ProfessorActifCount' => $ProfessorActifCount,
@@ -292,11 +295,14 @@ class UserController extends Controller
     public function updatePassword(Request $request)
     {
 
+        $min_msg = "Le nouveau mot de passe doit comporter au moins 8 caractères!";
         $error_messages = [
             "AM.required" => "Remplir le champ ancien mot de passe!",
             "NM.required" => "Remplir le champ nouveau mot de passe!",
             "CM.required" => "Remplir le champ confirmer mot de passe!",
-            "NM.min" => "Le nouveau mot de passe doit comporter au moins 8 caracteres!",
+            "AM.min" => $min_msg,
+            "AM.min" => $min_msg,
+            "NM.min" => $min_msg,
         ];
 
         $validator = Validator::make($request->all(),[
@@ -309,14 +315,13 @@ class UserController extends Controller
             return response()->json([
             "status" => false,
             "reload" => false,
-            "title" => "CONNECTION ECHOUEE",
+            "title" => "TENTATIVE ECHOUEE",
             "msg" => $validator->errors()->first()]);
 
         $id = $request-> id;
         $User = User::find($id);
 
         if(Hash::check($request-> AM, $User-> password)){
-
             if($request-> NM == $request-> CM){
                 $search = User::find($id);
                 if($search){
@@ -328,30 +333,23 @@ class UserController extends Controller
                         "reload" => true,
                         "redirect_to" => "0",
                         "title" => "MIS A JOUR REUSSIE",
-                        "msg" => "Mis a jour reussie"
+                        "msg" => "Mise à jour réussie"
                     ]);
                 }
             }else{
-
                 return response()->json([
-
                     "status" => false,
                     "reload" => false,
-                    "title" => "CONNECTION ECHOUE",
+                    "title" => "TENTATIVE ECHOUE",
                     "msg" => "Le nouveau mot de passe et la confirmation du mot de passe sont différents"
-    
                 ]);
-
             }
-
         }else{
             return response()->json([
-
                 "status" => false,
                 "reload" => false,
                 "title" => "CONNECTION ECHOUE",
                 "msg" => "L'ancien mot de passe saisie ne correspond pas au mot de passe enregistré dans la base de donnée"
-
             ]);
         }
     }

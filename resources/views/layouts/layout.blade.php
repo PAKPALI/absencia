@@ -220,7 +220,7 @@
                                         title: data.title,
                                         text: data.msg,
                                     }).then(() => {
-                                        window.location.replace(chemin);
+                                        window.location.replace("{{ route('conn') }}");
                                     })
                                 }
                             },

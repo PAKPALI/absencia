@@ -137,6 +137,7 @@ Route::prefix('absence')->middleware(['auth'])->controller(AbsenceController::cl
     Route::get('','absence')->name('absence');
     Route::get('view/{id}', 'view');
     Route::get('showListAbsence', 'showListAbsence')->name('showListAbsence');
+    Route::get('showListAbsenceToday', 'showListAbsenceToday')->name('showListAbsenceToday');
 
     //post
     Route::post('getClassroomInfoById', 'getClassroomInfoById');
