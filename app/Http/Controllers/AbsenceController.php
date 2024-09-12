@@ -12,7 +12,6 @@ use Yajra\DataTables\Facades\DataTables;
 
 class AbsenceController extends Controller
 {
-
     public function absence(Request $request)
     {
         $Classroom = Classroom::where('schools_id', Auth::user()->school_id)->get();

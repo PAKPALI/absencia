@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
@@ -166,12 +167,13 @@ class StudentController extends Controller
         $this->addAbsent($classroom_id,$id,$authUserSchoolId);
         if($search->email OR $search->email2){
             $this->sendEmail($search->email,$search->email2,$search->fullName());
+            $this->sendSms($search->num1,$search->fullName());
             return response()->json([
                 "status" => true,
                 "reload" => true,
                 // "redirect_to" => route('user'),
                 "title" => "ENREGISTREMENT REUSSIE",
-                "msg" => "Email envoyé aux parents avec succès"
+                "msg" => "Email et sms envoyé aux parents avec succès"
             ]);
         }else{
             return response()->json([
@@ -194,12 +196,31 @@ class StudentController extends Controller
             if ($email1) {
                 $message->to($email1);
             }
-            
             if ($email2){
                 $message->cc($email2);
             }
             $message->subject('ABSENCIA');
         });
+    }
+
+    public function sendSms($phone_number,$fullName)
+    {
+        $profSubject = Auth::user()->subject;
+        $sms_text = "L'élève ".$fullName." est absent(e) au cours de ".strtoupper($profSubject)."";
+        try {
+            $client = Http::withHeaders([
+                'auth_token'=>config('services.sms.token'),
+                'Content-Type'=>'application/json'
+            ])->post(config('services.sms.url'), [
+                'email'=> 'davidksolome2@gmail.com',
+                'country'=> 'TG',
+                'phone_number'=> $phone_number,
+                'message'=> $sms_text,
+                'response_url'=> 'https://webhook.site/9ea64d5a-65a3-4939-8455-cf3946436f7f'
+            ]);
+        } catch (\Throwable $th) {
+           dd($th->getMessage());
+        }
     }
 
     public function addAbsent($classroom_id,$student_id, $school_id)

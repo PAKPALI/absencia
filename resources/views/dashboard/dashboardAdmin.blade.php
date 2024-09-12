@@ -1,123 +1,159 @@
 @extends('layouts.layout')
 @section('content')
-    <div class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1 class="m-0">Tableau de bord</h1>
-                </div>
-                <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-right">
-                        <!-- <li class="breadcrumb-item"><a href="#">Home</a></li>
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">Tableau de bord</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <!-- <li class="breadcrumb-item"><a href="#">Home</a></li>
                         <li class="breadcrumb-item active">Dashboard v1</li> -->
-                    </ol>
-                </div>
+                </ol>
             </div>
         </div>
     </div>
+</div>
 
-    <section class="content">
-        <div class="container-fluid">
-            <div class="row">
-                <!-- <div class="col-lg-3 col-6">
-
-                    <div class="small-box bg-info">
-                        <div class="inner">
-                            <h3>Ecole</h3>
-                            <p>Nombre total:</p>
-                        </div>
-                        <div class="icon">
-                            <i class="ion ion-bag"></i>
-                        </div>
-                        <a href="#" class="small-box-footer">Plus d'info <i class="fas fa-arrow-circle-right"></i></a>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <!-- <div class="col-lg-3 col-6">
+                <div class="small-box bg-info">
+                    <div class="inner">
+                        <h3>Ecole</h3>
+                        <p>Nombre total:</p>
                     </div>
-                </div> -->
-
-                <div class="col-lg-4 col-4">
-                    <div class="small-box bg-primary">
-                        <div class="inner">
-                            <h3>Classe</h3>
-                            <p><strong> total: {{$ClassroomCount}}</strong></p>
-                        </div>
-                        <div class="icon">
-                            <i class="ion ion-stats-bars"></i>
-                        </div>
-                        <a href="{{route('classroom')}}" class="small-box-footer">Plus d'info <i class="fas fa-arrow-circle-right"></i></a>
+                    <div class="icon">
+                        <i class="ion ion-bag"></i>
                     </div>
+                    <a href="#" class="small-box-footer">Plus d'info <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
+            </div> -->
 
-                <div class="col-lg-4 col-4">
-                    <div class="small-box bg-warning">
-                        <div class="inner">
-                            <h3>Eleve</h3>
-                            <p><strong> total: {{$totalAvailableStudents}}</strong></p>
-                        </div>
-                        <div class="icon">
-                            <i class="ion ion-stats-bars"></i>
-                        </div>
-                        <a href="#" class="small-box-footer">Plus d'info <i class="fas fa-arrow-circle-right"></i></a>
+            <div class="col-lg-4 col-4">
+                <div class="small-box bg-primary">
+                    <div class="inner">
+                        <h3>Classe</h3>
+                        <p><strong> total: {{$ClassroomCount}}</strong></p>
                     </div>
-                </div>
-
-                <div class="col-lg-4 col-4">
-                    <div class="small-box bg-success">
-                        <div class="inner">
-                            <h3>Absences</h3>
-                            <p><strong> total: {{$Absences->count()}}</strong></p>
-                        </div>
-                        <div class="icon">
-                            <i class="ion ion-stats-bars"></i>
-                        </div>
-                        <a href="{{route('absence')}}" class="small-box-footer">Plus d'info <i class="fas fa-arrow-circle-right"></i></a>
+                    <div class="icon">
+                        <i class="ion ion-stats-bars"></i>
                     </div>
-                </div>
-
-                <div class="col-lg-12 col-12">
-                    <div class="small-box bg-info">
-                        <div class="inner">
-                            <h3>Professeurs</h3>
-                            <p><strong> total: {{$ProfessorCount}}</strong></p>
-                            <p><strong> total actif: {{$ProfessorActifCount}}</strong></p>
-                            <p><strong> total inactif: {{$ProfessorInactifCount}}</strong></p>
-                        </div>
-                        <div class="icon">
-                            <i class="ion ion-stats-bars"></i>
-                        </div>
-                        <a href="{{route('professor')}}" class="small-box-footer">Plus d'info <i class="fas fa-arrow-circle-right"></i></a>
-                    </div>
+                    <a href="{{route('classroom')}}" class="small-box-footer">Plus d'info <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
 
-            <!-- second row -->
-            <div class="row">
-                <div class="col-lg-12 col-12">
-                    <div class="card mt-5">
-                        <div id="searchCard" class="card-header bg-dark">
-                            <h2 class="card-title">LISTE DES ABSENCES AUJOURD'HUI ({{$AbsencesToday->count()}})</h2>
+            <div class="col-lg-4 col-4">
+                <div class="small-box bg-warning">
+                    <div class="inner">
+                        <h3>Eleve</h3>
+                        <p><strong> total: {{$totalAvailableStudents}}</strong></p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-stats-bars"></i>
+                    </div>
+                    <a href="#" class="small-box-footer">Plus d'info <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-4">
+                <div class="small-box bg-success">
+                    <div class="inner">
+                        <h3>Absences</h3>
+                        <p><strong> total: {{$Absences->count()}}</strong></p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-stats-bars"></i>
+                    </div>
+                    <a href="{{route('absence')}}" class="small-box-footer">Plus d'info <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+
+            <div class="col-lg-12 col-12">
+                <div class="small-box bg-info">
+                    <div class="inner">
+                        <h3>Professeurs</h3>
+                        <p><strong> total: {{$ProfessorCount}}</strong></p>
+                        <p><strong> total actif: {{$ProfessorActifCount}}</strong></p>
+                        <p><strong> total inactif: {{$ProfessorInactifCount}}</strong></p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-stats-bars"></i>
+                    </div>
+                    <a href="{{route('professor')}}" class="small-box-footer">Plus d'info <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- second row -->
+        <div class="row">
+            <div class="col-lg-12 mt-4">
+                <div class="card">
+                    <div class="card-header border-0">
+                        <div class="d-flex justify-content-between">
+                            <h3 class="card-title">Sales</h3>
+                            <a href="javascript:void(0);">View Report</a>
                         </div>
-                        <div class="card-body">
-                            <table id="absence_list" class="table table-bordered table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>N°</th>
-                                        <th>Classe</th>
-                                        <th>Elève</th>
-                                        <th>Matière</th>
-                                        <th>Date d'absence</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    
-                                </tbody> 
-                            </table>
-                        </div>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="absenceChart"></canvas>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
-    <script>
+
+        <!-- third row -->
+        <div class="row">
+            <div class="col-lg-12 col-12">
+                <div class="card mt-4">
+                    <div id="searchCard" class="card-header bg-dark">
+                        <h2 class="card-title">LISTE DES ABSENCES AUJOURD'HUI ({{$AbsencesToday->count()}})</h2>
+                    </div>
+                    <div class="card-body">
+                        <table id="absence_list" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>N°</th>
+                                    <th>Classe</th>
+                                    <th>Elève</th>
+                                    <th>Matière</th>
+                                    <th>Date d'absence</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+</section>
+<script>
     $(function() {
+        const ctx = document.getElementById('absenceChart').getContext('2d');
+        const absenceChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: {!! json_encode($classroom) !!}, // classroom name
+                datasets: [{
+                    label: 'Nombre d\'absences',
+                    data: {!! json_encode($absenceCounts) !!}, // Number of absences
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
         var absence_list = $('#absence_list').DataTable({
             processing: true,
             serverSide: true,
@@ -129,16 +165,29 @@
                     d.date2 = $('#date2').val();
                 }
             },
-            columns: [
-                {data: 'id', name: 'id'},
-                {data: 'classrooms_id', name: 'classrooms_id'},
-                {data: 'students_id', name: 'students_id'},
-                {data: 'professor_id', name: 'professor_id'},
-                {data: 'created_at', name: 'created_at'},
+            columns: [{
+                    data: 'id',
+                    name: 'id'
+                },
+                {
+                    data: 'classrooms_id',
+                    name: 'classrooms_id'
+                },
+                {
+                    data: 'students_id',
+                    name: 'students_id'
+                },
+                {
+                    data: 'professor_id',
+                    name: 'professor_id'
+                },
+                {
+                    data: 'created_at',
+                    name: 'created_at'
+                },
             ],
             dom: 'Bfrtip', // Place les boutons en haut du tableau
-            buttons: [
-                {
+            buttons: [{
                     extend: 'copy',
                     text: 'Copier',
                     title: 'Liste des Absences',
@@ -176,7 +225,7 @@
                     text: 'Afficher/Masquer Colonnes',
                     action: function(e, dt, node, config) {
                         var columnDropdown = $('<div class="dropdown-menu"></div>');
-                        
+
                         dt.columns().every(function() {
                             var column = this;
                             var columnIndex = column.index();
@@ -211,7 +260,7 @@
             ],
             drawCallback: function() {
                 $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
-                $('#class_list').css('width','100%');
+                $('#class_list').css('width', '100%');
             }
         });
 

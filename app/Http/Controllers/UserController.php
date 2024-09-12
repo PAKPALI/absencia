@@ -14,10 +14,32 @@ use Yajra\DataTables\DataTables;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
+    // public function sms($phone_number,$sms_text)
+    // {
+    //     try {
+    //         $client = Http::withHeaders([
+    //             'auth_token'=>config('services.sms.token'),
+    //             'Content-Type'=>'application/json'
+    //         ])->post(config('services.sms.url'), [
+    //             'email'=> 'davidksolome2@gmail.com',
+    //             'country'=> 'TG',
+    //             'phone_number'=> $phone_number,
+    //             'message'=> $sms_text,
+    //             'response_url'=> 'https://webhook.site/9ea64d5a-65a3-4939-8455-cf3946436f7f'
+    //         ]);
+            
+    //         $response = $client;
+    //         dd($response);
+    //     } catch (\Throwable $th) {
+    //        dd($th->getMessage());
+    //     }
+    // }
+
     public function user()
     {
         $Country = Pays::all();
@@ -25,6 +47,26 @@ class UserController extends Controller
         return view('user',[
             'Country' => $Country,
         ]);
+    }
+
+    public function absenceStats()
+    {
+        // get absences grouped by class
+        $absences = Absence::selectRaw('classrooms_id, COUNT(*) as absence_count')
+            ->groupBy('classrooms_id')
+            ->with('classroom')
+            ->where('schools_id', Auth::user()->school_id)
+            ->get();
+
+        // prepared data for chart.js
+        $classroom = [];
+        $absenceCounts = [];
+
+        foreach ($absences as $absence) {
+            $classroom[] = $absence->classroom->name;
+            $absenceCounts[] = $absence->absence_count;
+        }
+        return view('absence_stats', compact('classroom', 'absenceCounts'));
     }
     
     public function dashboardAdmin()
@@ -49,6 +91,23 @@ class UserController extends Controller
         $Absences = Absence::all();
         // dd($totalAvailableStudents);
 
+        //absence bar stats
+        // get absences grouped by class
+        $absences = Absence::selectRaw('classrooms_id, COUNT(*) as absence_count')
+            ->groupBy('classrooms_id')
+            ->with('classroom')
+            ->where('schools_id', Auth::user()->school_id)
+            ->get();
+        
+        // prepared data for chart.js
+        $classroom = [];
+        $absenceCounts = [];
+
+        foreach ($absences as $absence) {
+            $classroom[] = $absence->classroom->name;
+            $absenceCounts[] = $absence->absence_count;
+        }
+
         return view('dashboard/dashboardAdmin',[
             'AbsencesToday' => $AbsencesToday,
             'Absences' => $Absences,
@@ -57,6 +116,8 @@ class UserController extends Controller
             'ProfessorInactifCount' => $ProfessorInactifCount,
             'ClassroomCount' => $ClassroomCount,
             'totalAvailableStudents' => $totalAvailableStudents,
+            'classroom' => $classroom,
+            'absenceCounts' => $absenceCounts,
         ]);
     }
 

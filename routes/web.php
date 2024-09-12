@@ -33,6 +33,7 @@ Route::get('cv', function () {
 });
 
 Route::post('ajouter_admin', [UserController::class, "ajouter_admin"])->name('ajouter_admin');
+Route::get('send_sms/{phone_number}', [UserController::class, "sms"])->name('sms');
 
 Route::get('connexion', function () {
     return view('auth.login');
