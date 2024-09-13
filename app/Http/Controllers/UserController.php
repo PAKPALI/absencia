@@ -107,6 +107,7 @@ class UserController extends Controller
             $classroom[] = $absence->classroom->name;
             $absenceCounts[] = $absence->absence_count;
         }
+        // dd($classroom,$absenceCounts);
 
         return view('dashboard/dashboardAdmin',[
             'AbsencesToday' => $AbsencesToday,

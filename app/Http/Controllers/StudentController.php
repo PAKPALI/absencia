@@ -7,6 +7,7 @@ use App\Models\Student;
 use App\Models\Classroom;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
+use App\Jobs\SendNotificationJob;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
@@ -108,9 +109,9 @@ class StudentController extends Controller
         $error_messages = [
             "last_name.required" => "Remplir le champ Nom!",
             "first_name.required" => "Remplir le champ Prénom!",
-            "email.unique" => "L'email ".$request-> email. " existe déjà!",
-            "email2.unique" => "L'email ".$request-> email2. " existe déjà!",
-            "email.unique" => "L'email ".$request-> email. " existe déjà!",
+            // "email.unique" => "L'email ".$request-> email. " existe déjà!",
+            // "email2.unique" => "L'email ".$request-> email2. " existe déjà!",
+            // "email.unique" => "L'email ".$request-> email. " existe déjà!",
             // "email2.unique" => "L'email ".$request-> email. " existe déjà!",
             // "num1.numeric" => "Remplir le champ Numéro 1 avec des chiffres!",
             // "num2.numeric" => "Remplir le champ Numéro 2 avec des chiffres!",
@@ -120,8 +121,8 @@ class StudentController extends Controller
         $validator = Validator::make($request->all(),[
             'last_name' => ['required'],
             'first_name' => ['required'],
-            'email' => ['unique:students'],
-            'email' => ['unique:students'],
+            // 'email' => ['unique:students'],
+            // 'email' => ['unique:students'],
             // 'num1' => ['numeric'],
             // 'num2' => ['numeric'],
             'gender' => ['required'],
@@ -166,8 +167,17 @@ class StudentController extends Controller
         $classroom_id = $search -> classrooms_id;
         $this->addAbsent($classroom_id,$id,$authUserSchoolId);
         if($search->email OR $search->email2){
-            $this->sendEmail($search->email,$search->email2,$search->fullName());
-            $this->sendSms($search->num1,$search->fullName());
+            // $this->sendEmail($search->email,$search->email2,$search->fullName());
+            // $this->sendSms($search->num1,$search->fullName());
+            $info = [
+                'email1' => $search->email,
+                'email2' => $search->email2,
+                'num1' => $search->num1,
+                'num2' => $search->num2,
+                'text' => "L'élève ".$search->fullName()." est absent(e) au cours de ".strtoupper(Auth::user()->subject).""
+            ];
+            SendNotificationJob::dispatch($info);
+
             return response()->json([
                 "status" => true,
                 "reload" => true,
