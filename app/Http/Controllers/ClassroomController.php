@@ -33,7 +33,9 @@ class ClassroomController extends Controller
                 })
                 ->addColumn('action', function($row){
                     $btn = '<a href="javascript:void(0)" data-toggle="modal" data-target="#modal-view"  data-id="'.$row->id.'" data-original-title="Detail" class="btn btn-primary btn-sm mr-1 viewUser">Détail</a>';
-                    $btn = $btn.'<a href="javascript:void(0)" data-toggle="modal" data-target="#modal-update"  data-id="'.$row->id.'" data-original-title="Modifier" class="btn btn-warning btn-sm mr-1 editUser">Modifier</a>';
+                    if(Auth::user()->user_type ==1){
+                        $btn = $btn.'<a href="javascript:void(0)" data-toggle="modal" data-target="#modal-update"  data-id="'.$row->id.'" data-original-title="Modifier" class="btn btn-warning btn-sm mr-1 editUser">Modifier</a>';
+                    }
                     // $btn = $btn.' <a href="javascript:void(0)" data-id="'.$row->id.'" data-original-title="Supprimer" class="btn btn-danger btn-sm deleteUser">Sup</a>';
                     return $btn;
                 })

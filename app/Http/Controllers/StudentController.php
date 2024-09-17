@@ -167,8 +167,8 @@ class StudentController extends Controller
         $classroom_id = $search -> classrooms_id;
         $this->addAbsent($classroom_id,$id,$authUserSchoolId);
         if($search->email OR $search->email2){
-            // $this->sendEmail($search->email,$search->email2,$search->fullName());
-            // $this->sendSms($search->num1,$search->fullName());
+            $this->sendEmail($search->email,$search->email2,$search->fullName());
+            $this->sendSms($search->num1,$search->fullName());
             $info = [
                 'email1' => $search->email,
                 'email2' => $search->email2,
@@ -176,7 +176,7 @@ class StudentController extends Controller
                 'num2' => $search->num2,
                 'text' => "L'élève ".$search->fullName()." est absent(e) au cours de ".strtoupper(Auth::user()->subject).""
             ];
-            SendNotificationJob::dispatch($info);
+            // SendNotificationJob::dispatch($info);
 
             return response()->json([
                 "status" => true,
