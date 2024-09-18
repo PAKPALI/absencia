@@ -222,7 +222,7 @@ class StudentController extends Controller
                 'auth_token'=>config('services.sms.token'),
                 'Content-Type'=>'application/json'
             ])->post(config('services.sms.url'), [
-                'email'=> 'davidksolome2@gmail.com',
+                'email'=> 'pakpalididier@gmail.com',
                 'country'=> 'TG',
                 'phone_number'=> $phone_number,
                 'message'=> $sms_text,

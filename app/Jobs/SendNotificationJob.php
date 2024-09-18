@@ -51,30 +51,35 @@ class SendNotificationJob implements ShouldQueue
             $message->subject('ABSENCIA');
         });
 
-        // send sms
-        if($num1){
+        function smsConfiguration($phone_number,$text){
             $client = Http::withHeaders([
                 'auth_token'=>config('services.sms.token'),
                 'Content-Type'=>'application/json'
             ])->post(config('services.sms.url'), [
                 'email'=> 'davidksolome2@gmail.com',
                 'country'=> 'TG',
-                'phone_number'=> $num1,
+                'phone_number'=> $phone_number,
                 'message'=> $text,
                 'response_url'=> 'https://webhook.site/9ea64d5a-65a3-4939-8455-cf3946436f7f'
             ]);
         }
+
+        // send sms
+        if($num1){
+            smsConfiguration($num1,$text);
+        }
         if($num2){
-            $client = Http::withHeaders([
-                'auth_token'=>config('services.sms.token'),
-                'Content-Type'=>'application/json'
-            ])->post(config('services.sms.url'), [
-                'email'=> 'davidksolome2@gmail.com',
-                'country'=> 'TG',
-                'phone_number'=> $num2,
-                'message'=> $text,
-                'response_url'=> 'https://webhook.site/9ea64d5a-65a3-4939-8455-cf3946436f7f'
-            ]);
+            smsConfiguration($num2,$text);
+            // $client = Http::withHeaders([
+            //     'auth_token'=>config('services.sms.token'),
+            //     'Content-Type'=>'application/json'
+            // ])->post(config('services.sms.url'), [
+            //     'email'=> 'davidksolome2@gmail.com',
+            //     'country'=> 'TG',
+            //     'phone_number'=> $num2,
+            //     'message'=> $text,
+            //     'response_url'=> 'https://webhook.site/9ea64d5a-65a3-4939-8455-cf3946436f7f'
+            // ]);
         }
     }
 }

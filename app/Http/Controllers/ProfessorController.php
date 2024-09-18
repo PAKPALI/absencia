@@ -33,9 +33,28 @@ class ProfessorController extends Controller
                 $query->where('status', true);
             }])
             ->get();
+
+        //absence bar stats
+        // get absences grouped by class
+        $absences = Absence::selectRaw('classrooms_id, COUNT(*) as absence_count')
+        ->groupBy('classrooms_id')
+        ->with('classroom')
+        ->where('schools_id', Auth::user()->school_id)
+        ->get();
+    
+        // prepared data for chart.js
+        $classroomChart= [];
+        $absenceCounts = [];
+
+        foreach ($absences as $absence) {
+            $classroomChart[] = $absence->classroom->name;
+            $absenceCounts[] = $absence->absence_count;
+        }
         return view('dashboard/dashboardProf',[
             'Absences' => $Absences,
             'Classroom' => $Classroom,
+            'classroomChart' => $classroomChart,
+            'absenceCounts' => $absenceCounts,
         ]);
         // return view('');
     }
