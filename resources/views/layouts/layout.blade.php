@@ -65,7 +65,8 @@
 
         <!-- Preloader -->
         <div class="preloader flex-column justify-content-center align-items-center">
-            <img class="animation__shake" src="{{asset('img/trimax.gif')}}" alt="TRIMAX_Logo" height="100" width="100">
+            <img class="animation__shake" src="{{asset('img/trimax.gif')}}" alt="TRIMAX_Logo" height="400" width="400">
+            <!-- <img class="animation__shake" src="{{asset('img/logo.png')}}" alt="TRIMAX_Logo" height="500" width="500"> -->
         </div>
 
         <!-- Navbar -->

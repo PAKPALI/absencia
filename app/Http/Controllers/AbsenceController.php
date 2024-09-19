@@ -29,11 +29,14 @@ class AbsenceController extends Controller
     public function showListAbsence(Request $request)
     {
         if ($request->ajax()) {
-            if($request->classId && $request->date1 && $request->date2){
+            if($request->classId){
                 $class_id = $request->classId;
-                $date1 = Carbon::createFromFormat('d/m/Y', $request->date1)->format('Y-m-d');
-                $date2 = Carbon::createFromFormat('d/m/Y', $request->date2)->format('Y-m-d 23:59:59');
-                $Absences = Absence::where('classrooms_id',$class_id)->whereBetween('created_at', [$date1, $date2])->latest()->get();
+                if($request->date1 && $request->date2){
+                    $date1 = Carbon::createFromFormat('d/m/Y', $request->date1)->format('Y-m-d');
+                    $date2 = Carbon::createFromFormat('d/m/Y', $request->date2)->format('Y-m-d 23:59:59');
+                    $Absences = Absence::where('classrooms_id',$class_id)->whereBetween('created_at', [$date1, $date2])->latest()->get();
+                }
+                $Absences = Absence::where('classrooms_id',$class_id)->latest()->get();
             }else{
                 $Absences = Absence::where('schools_id',Auth::user()->school_id)->latest()->get();
             }

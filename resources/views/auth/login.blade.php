@@ -8,8 +8,8 @@
         <!-- /.login-logo -->
         <div class="card">
             <div class="card-body login-card-body text-center">
-                <img class="animation__shake " src="{{asset('img/trimax.gif')}}" alt="TRIMAX_Logo" height="100" width="100">
-                <p class="login-box-msg mt-3 mb-3 text-dark"><strong> SE CONNECTER</strong> </p>
+                <img class="animation__shake " src="{{asset('img/trimax.gif')}}" alt="TRIMAX_Logo" height="200" width="200">
+                <p class="login-box-msg mt-2 mb-2 text-dark"><strong> SE CONNECTER</strong> </p>
 
                 <form id="form-login">
                     @csrf
@@ -29,7 +29,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row mt-5">
+                    <div class="row mt-3">
                         <!-- <div class="col-8">
                             <div class="icheck-primary">
                                 <input type="checkbox" id="remember">
@@ -72,7 +72,6 @@
 <script>
     $(function() {
         $('#loader').hide();
-
         //ajax pour se connecter
         $('#form-login').submit(function(){
             event.preventDefault();

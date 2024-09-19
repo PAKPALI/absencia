@@ -150,46 +150,48 @@
 </section>
 <script>
     $(function() {
+        // Chart Bar
         const ctx = document.getElementById('barChart').getContext('2d');
         const absenceChart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: {!! json_encode($classroom) !!}, // classroom name
+                labels: {!! json_encode($classroom) !!}, // classroom names
                 datasets: [{
                     label: 'Nombre d\'absences',
                     data: {!! json_encode($absenceCounts) !!}, // Number of absences
-                    backgroundColor: '#59789F',
-                    borderColor: 'rgba(54, 162, 235, 1)',
+                    backgroundColor: {!! json_encode($colors) !!},  // Unique colors for each bar
+                    borderColor: {!! json_encode($colors) !!},  // Matching border colors
                     borderWidth: 1
                 }]
             },
             options: {
                 scales: {
                     y: {
-                        beginAtZero: true, // Assure que l'axe commence à zéro
-                        suggestedMin: 0,   // Propose un minimum de 0 (pour éviter les valeurs plus hautes)
+                        beginAtZero: true,
+                        suggestedMin: 0,
                         ticks: {
-                            precision: 0,  // Assure que seules des valeurs entières sont affichées
-                            stepSize: 1    // Définit l'incrément des valeurs à 1 pour que chaque absence soit visible
+                            precision: 0,
+                            stepSize: 1
                         }
                     }
                 }
             }
         });
 
+        // Chart Pie
         const ctx1 = document.getElementById('pieChart').getContext('2d');
         const absenceChart1 = new Chart(ctx1, {
             type: 'pie',
             data: {
-                labels: {!! json_encode($classroom) !!}, // classroom name
+                labels: {!! json_encode($classroom) !!}, // classroom names
                 datasets: [{
                     label: 'Nombre d\'absences',
                     data: {!! json_encode($absenceCounts) !!}, // Number of absences
-                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
+                    backgroundColor: {!! json_encode($colors) !!},  // Use the same colors for pie chart
+                    borderColor: '#ffffff',  // Optional: Set white border for better visibility
+                    borderWidth: 2
                 }]
-            },
+            }
         });
 
         var absence_list = $('#absence_list').DataTable({

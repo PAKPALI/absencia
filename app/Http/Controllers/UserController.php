@@ -106,6 +106,8 @@ class UserController extends Controller
         foreach ($absences as $absence) {
             $classroom[] = $absence->classroom->name;
             $absenceCounts[] = $absence->absence_count;
+            // Generate a random color for each classroom
+            $colors[] = sprintf('#%06X', mt_rand(0, 0xFFFFFF)); // Random color generation
         }
         // dd($classroom,$absenceCounts);
 
@@ -119,6 +121,7 @@ class UserController extends Controller
             'totalAvailableStudents' => $totalAvailableStudents,
             'classroom' => $classroom,
             'absenceCounts' => $absenceCounts,
+            'colors' => $colors,  // Pass colors to view
         ]);
     }
 

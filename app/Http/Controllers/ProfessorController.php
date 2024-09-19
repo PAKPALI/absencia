@@ -49,14 +49,16 @@ class ProfessorController extends Controller
         foreach ($absences as $absence) {
             $classroomChart[] = $absence->classroom->name;
             $absenceCounts[] = $absence->absence_count;
+            // Generate a random color for each classroom
+            $colors[] = sprintf('#%06X', mt_rand(0, 0xFFFFFF)); // Random color generation
         }
         return view('dashboard/dashboardProf',[
             'Absences' => $Absences,
             'Classroom' => $Classroom,
             'classroomChart' => $classroomChart,
             'absenceCounts' => $absenceCounts,
+            'colors' => $colors,  // Pass colors to view
         ]);
-        // return view('');
     }
 
     public function showListProfessor(Request $request)
