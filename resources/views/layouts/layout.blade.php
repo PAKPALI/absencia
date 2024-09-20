@@ -44,11 +44,46 @@
     <style>
         @keyframes clignotement {
             0% { background-color: white; }
-            50% { background-color: red; }
+            99% { background-color: red; }
+            100% { background-color: white; }
+        }
+
+        @keyframes classroom {
+            0% { background-color: white; }
+            99% { background-color: blue; color: white;}
+            100% { background-color: white; }
+        }
+        @keyframes student {
+            0% { background-color: white; }
+            99% { background-color: orange;}
+            100% { background-color: white; }
+        }
+
+        @keyframes absence {
+            0% { background-color: white; }
+            99% { background-color: green; color: white; }
+            100% { background-color: white; }
+        }
+
+        @keyframes professor {
+            0% { background-color: white; }
+            99% { background-color: gray; color: white; }
             100% { background-color: white; }
         }
         #clignotant {
-            animation: clignotement 3s infinite;
+            animation: clignotement 2s infinite;
+        }
+        .classroom {
+            animation: classroom 10s infinite;
+        }
+        .student {
+            animation: student 10s infinite;
+        }
+        .absence {
+            animation: absence 10s infinite;
+        }
+        .professor {
+            animation: professor 10s infinite;
         }
 
         .dropdown-item.active {

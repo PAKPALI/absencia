@@ -21,7 +21,7 @@
         .login-container {
             max-width: 900px;
             background-color: white;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 5px 5px 5px 5px rgba(0, 0, 255, 0.1);
             border-radius: 10px;
         }
         .login-image {
@@ -41,32 +41,56 @@
         .form-control {
             border-left: 0;
         }
-        .background-image {
-            position: absolute; /* Position absolue pour que l'image se superpose à la div parente */
-            top: 0; /* Positionnement en haut de la div parente */
-            left: 0; /* Positionnement à gauche de la div parente */
-            width: 100%; /* Largeur de la div parente */
-            height: 100%; /* Hauteur de la div parente */
-            background-image: url('https://th.bing.com/th/id/R.190707a8ce0086574452dca379ae4e5e?rik=18IS36Zr6DdiVw&pid=ImgRaw&r=0'); /* Chemin vers votre image */
-            background-size: cover; /* Taille de l'image pour remplir la div parente */
-            background-position: center; /* Positionnement de l'image au centre */
-            opacity: 0.8; /* Opacité de l'image */
+        @keyframes colorChange {
+            0% {
+                color: #ADD8E6; /* Bleu clair */
+            }
+            40% {
+                color: #0000FF; /* Bleu standard */
+            }
+            80% {
+                color: #00008B; /* Bleu foncé */
+            }
+            100% {
+                color: #ADD8E6; /* Bleu clair */
+            }
+        }
+
+        @keyframes backgroundColorChange {
+            0% {
+                background-color: #ADD8E6; /* Bleu clair */
+            }
+            40% {
+                background-color: #0000FF; /* Bleu simple */
+            }
+            80% {
+                background-color: #00008B; /* Bleu foncé */
+            }
+            100% {
+                background-color: #ADD8E6; /* Bleu clair */
+            }
+        }
+        .text-animated {
+            animation: colorChange 10s infinite;
+        }
+        .bg-animated {
+            animation: backgroundColorChange 10s infinite;
         }
     </style>
 </head>
 <body class="ackground-image">
     <div class="login-container d-flex">
-        <!-- Section de l'image -->
-        <div class="col-md-6 p-0 text-center">
-            <!-- <img src="https://via.placeholder.com/450x500" alt="Login Image" class="img-fluid login-image"> -->
+        <!-- Section de l'image (cachée sur les petits écrans) -->
+        <div class="col-md-6 p-0 text-center d-none d-md-block">
             <img class="img-fluid login-image" src="{{asset('img/trimax.gif')}}" alt="TRIMAX_Logo" height="450" width="500">
         </div>
         
         <!-- Section du formulaire -->
-        <div class="col-md-6 d-flex align-items-center login-form">
+        <div class="col-md-6 d-flex align-items-center login-form text-center">
             <form class="w-100" id="form-login">
                 @csrf
-                <h2 class="mb-4 text-center">Connexion</h2>
+                <h1 class="mb-3 text-center text-animated">ABSENCIA</h1>
+                <h5 class="mb-4 text-center">Connexion</h5>
                 <!-- Champ Email avec icône -->
                 <label for="email" class="form-label">Email</label>
                 <div class="input-group mb-3">
@@ -77,8 +101,8 @@
                 </div>
 
                 <!-- Champ Mot de passe avec icône et option de visualisation -->
-                <label for="password" class="form-label">Password</label>
-                <div class="input-group mb-3">
+                <label for="password" class="form-label">Mot de passe</label>
+                <div class="input-group mb-1">
                     <span class="input-group-text">
                         <i class="bi bi-lock"></i>
                     </span>
@@ -87,14 +111,11 @@
                         <i class="bi bi-eye" id="togglePasswordIcon"></i>
                     </span>
                 </div>
-                <!-- <div class="mb-3 form-check">
-                    <input type="checkbox" class="form-check-input" id="rememberMe">
-                    <label class="form-check-label" for="rememberMe">Se souvenir de moi</label>
-                </div> -->
-                <button type="submit" class="btn btn-primary w-100 mt-3">Se connecter</button>
-                <!-- <p class="mt-3 text-center">
-                    <a href="#">Mot de passe oublié?</a>
-                </p> -->
+                <!-- loader -->
+                <div id="loader" class="spinner-border text-primary text-center mt-5 mb-2" role="status">
+                    <span class="sr-only">ABSENCIA</span>
+                </div>
+                <button id="submit" type="submit" class="btn bg-animated w-100 mt-3 text-light">Se connecter</button>
             </form>
         </div>
     </div>
@@ -107,47 +128,46 @@
             //ajax pour se connecter
             $('#form-login').submit(function(){
                 event.preventDefault();
+                $('#submit').hide();
                 $('#loader').fadeIn();
                 $.ajax({
                     type: 'POST',
                     url: 'login',
-                    //enctype: 'multipart/form-data',
                     data: $('#form-login').serialize(),
                     datatype: 'json',
                     success: function (data){
                         console.log(data)
-                        if (data.status)
-                        {
+                        if (data.status) {
                             Swal.fire({
                                 icon: "success",
                                 title: data.title,
-                                text: "Connection reussie!",
+                                text: "Connexion réussie!",
                             }).then(() => {
                                 if (data.redirect_to != null){
-                                    window.location.assign(data.redirect_to)
-                                } else{
+                                    window.location.assign(data.redirect_to);
                                 }
-                            })
-                        }else{
+                            });
+                        } else {
                             $('#loader').hide();
+                            $('#submit').show();
                             Swal.fire({
                                 title: data.title,
                                 text:data.msg,
                                 icon: 'error',
                                 confirmButtonText: "D'accord",
                                 confirmButtonColor: 'red',
-                            })
+                            });
                         }
                     },
                     error: function (data){
-                        console.log(data)
                         $('#loader').hide();
+                        $('#submit').show();
                         Swal.fire({
                             icon: "error",
-                            title: "erreur",
+                            title: "Erreur",
                             text: "Impossible de communiquer avec le serveur.",
                             timer: 3600,
-                        })
+                        });
                     }
                 });
                 return false;
@@ -169,6 +189,6 @@
             });
         });
     </script>
-<script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 </body>
 </html>

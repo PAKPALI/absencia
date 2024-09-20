@@ -33,7 +33,7 @@
             </div> -->
 
             <div class="col-lg-4 col-4">
-                <div class="small-box bg-primary">
+                <div class="small-box classroom">
                     <div class="inner">
                         <h3>Classe</h3>
                         <p><strong> total: {{$ClassroomCount}}</strong></p>
@@ -46,7 +46,7 @@
             </div>
 
             <div class="col-lg-4 col-4">
-                <div class="small-box bg-warning">
+                <div class="small-box student">
                     <div class="inner">
                         <h3>Eleve</h3>
                         <p><strong> total: {{$totalAvailableStudents}}</strong></p>
@@ -59,7 +59,7 @@
             </div>
 
             <div class="col-lg-4 col-4">
-                <div class="small-box bg-success">
+                <div class="small-box absence">
                     <div class="inner">
                         <h3>Absences</h3>
                         <p><strong> total: {{$Absences->count()}}</strong></p>
@@ -72,7 +72,7 @@
             </div>
 
             <div class="col-lg-12 col-12">
-                <div class="small-box bg-info">
+                <div class="small-box professor">
                     <div class="inner">
                         <h3>Professeurs</h3>
                         <p><strong> total: {{$ProfessorCount}}</strong></p>
